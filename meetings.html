@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회의록 - WBS 목업</title>
+<link rel="stylesheet" href="_shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">회의록</span></div>
+
+  <div style="display:flex; gap:8px; margin-bottom:8px;">
+    <input id="meetSearch" oninput="filterMeetings()" placeholder="회의 제목이나 내용으로 검색" style="flex:1;">
+    <button><i class="ti ti-plus"></i> 회의록 등록</button>
+  </div>
+  <p class="tiny muted" style="margin:0 0 16px;"><i class="ti ti-lock"></i> 내가 참석한 회의만 표시됩니다</p>
+
+  <div id="meetList" style="display:flex; flex-direction:column; gap:10px;">
+    <div class="meet-item card" data-text="주간 정기회의 홈페이지 리뉴얼 진행상황 공유">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; font-weight:500;">주간 정기회의</span>
+        <span class="tiny muted">2026-07-01 10:00</span>
+      </div>
+      <div class="tiny muted" style="margin-top:4px;">홈페이지 리뉴얼 진행상황 공유. 디자인 시안 1차 검토 완료, 개발 착수 일정 확정.</div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+        <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">홈페이지 리뉴얼</span>
+        <span class="tiny muted">참석자 4명</span>
+        <span class="tiny muted" style="margin-left:auto;"><i class="ti ti-microphone"></i> 외부 서비스로 정리됨</span>
+      </div>
+    </div>
+
+    <div class="meet-item card" data-text="단가 협의 신제품 런칭 외주 단가 조율">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; font-weight:500;">외주 단가 협의</span>
+        <span class="tiny muted">2026-06-28 14:30</span>
+      </div>
+      <div class="tiny muted" style="margin-top:4px;">신제품 런칭 관련 외주 업체와 단가 조율. 최종 단가 합의 및 계약 조건 확정.</div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+        <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">신제품 런칭</span>
+        <span class="tiny muted">참석자 3명</span>
+      </div>
+    </div>
+
+    <div class="meet-item card" data-text="전사 공유회 분기 실적 및 계획 공유">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:14px; font-weight:500;">전사 분기 공유회</span>
+        <span class="tiny muted">2026-06-20 09:00</span>
+      </div>
+      <div class="tiny muted" style="margin-top:4px;">분기 실적 및 다음 분기 계획 공유.</div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+        <span style="font-size:11px; padding:2px 8px; background:#f1efe8; color:#5f5e5a; border-radius:4px;">프로젝트 미연결</span>
+        <span class="tiny muted">참석자 28명 · 같은 지점 전체 열람 가능</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="meetEmpty" style="display:none; text-align:center; padding:32px 0; color:#888780; font-size:13px;">검색 결과가 없습니다.</div>
+</div>
+<script>
+function filterMeetings(){
+  const q = document.getElementById('meetSearch').value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll('.meet-item').forEach(function(el){
+    const match = el.dataset.text.toLowerCase().includes(q);
+    el.style.display = match ? 'block' : 'none';
+    if(match) shown++;
+  });
+  document.getElementById('meetEmpty').style.display = shown===0 ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

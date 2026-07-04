@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent 관리 - WBS 목업</title>
+<link rel="stylesheet" href="_shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">Agent 관리</span></div>
+
+  <div style="display:flex; gap:6px; margin-bottom:16px; border-bottom:1px solid #d3d1c7;">
+    <div class="atab active" onclick="aswitch('list')" data-atab="list" style="padding:8px 4px; font-size:13px; cursor:pointer; border-bottom:2px solid #185FA5; color:#185FA5;">Agent 목록</div>
+    <div class="atab" onclick="aswitch('manual')" data-atab="manual" style="padding:8px 4px; margin-left:16px; font-size:13px; cursor:pointer; color:#5f5e5a;">매뉴얼·프롬프트</div>
+    <div class="atab" onclick="aswitch('log')" data-atab="log" style="padding:8px 4px; margin-left:16px; font-size:13px; cursor:pointer; color:#5f5e5a;">활동 로그</div>
+  </div>
+
+  <div id="a-list">
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:#639922; display:inline-block;"></span>
+          <span style="font-size:14px; font-weight:500;">hermes-agent-01</span>
+          <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">Cloud (Railway)</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button style="padding:4px 10px;"><i class="ti ti-player-pause"></i> 정지</button>
+          <button style="padding:4px 10px;"><i class="ti ti-refresh"></i> 재시작</button>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
+        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
+          <div class="tiny muted">CPU</div><div style="font-size:13px; font-weight:500; margin-top:2px;">38%</div>
+          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:38%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
+        </div>
+        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
+          <div class="tiny muted">RAM</div><div style="font-size:13px; font-weight:500; margin-top:2px;">4.1 / 8GB</div>
+          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:51%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
+        </div>
+        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
+          <div class="tiny muted">저장장치</div><div style="font-size:13px; font-weight:500; margin-top:2px;">22 / 100GB</div>
+          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:22%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
+        </div>
+      </div>
+      <div class="tiny" style="margin-top:10px; color:#5f5e5a;"><i class="ti ti-loader-2"></i> 수행 중: Drive 폴더 정리 (신제품 런칭)</div>
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">회의록 요약</span>
+        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">파일 정리</span>
+        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">Notion 연동</span>
+        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">매뉴얼 응답</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:#888780; display:inline-block;"></span>
+          <span style="font-size:14px; font-weight:500;">hermes-agent-02</span>
+          <span style="font-size:11px; padding:2px 8px; background:#f1efe8; color:#5f5e5a; border-radius:4px;">PC (Mini PC)</span>
+          <span class="tiny muted">오프라인</span>
+        </div>
+        <button style="padding:4px 10px;"><i class="ti ti-player-play"></i> 시작</button>
+      </div>
+      <div class="tiny muted" style="margin-top:8px;">WBS 기본 기능은 정상 동작 중 — AI 기능만 비활성화됨</div>
+    </div>
+  </div>
+
+  <div id="a-manual" style="display:none;">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px; font-weight:500; margin-bottom:8px;">회사 매뉴얼</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; border:1px solid #d3d1c7; border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:6px;">
+        <span><i class="ti ti-file-text"></i> 사규_2026.pdf</span><span style="color:#3B6D11;">학습 완료</span>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; border:1px solid #d3d1c7; border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:8px;">
+        <span><i class="ti ti-file-text"></i> 휴가규정.docx</span><span style="color:#854F0B;">학습 중</span>
+      </div>
+      <button style="padding:6px 12px;"><i class="ti ti-upload"></i> 매뉴얼 파일 등록</button>
+    </div>
+    <div>
+      <div style="font-size:13px; font-weight:500; margin-bottom:8px;">추가 프롬프트</div>
+      <textarea rows="3" placeholder="Agent에게 추가로 지시하고 싶은 내용을 입력하세요" style="width:100%;"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+        <span class="tiny muted">이전 프롬프트 3건 · 되돌리기 가능</span>
+        <button style="padding:6px 12px;">적용</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a-log" style="display:none; flex-direction:column; gap:8px;">
+    <div style="font-size:12px; display:flex; gap:8px;"><span class="muted" style="width:80px;">10:41</span><span>hermes-agent-01 — Drive 폴더 정리 완료 (신제품 런칭)</span></div>
+    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span class="muted" style="width:80px;">10:12</span><span>hermes-agent-01 — 매뉴얼 학습 갱신 (사규_2026.pdf)</span></div>
+    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span class="muted" style="width:80px;">09:50</span><span>hermes-agent-01 — 주간 진척 리포트 Slack 발송</span></div>
+    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span style="width:80px; color:#A32D2D;">09:30</span><span>hermes-agent-02 — 작업 실패: Notion 동기화 (재시도 예약)</span></div>
+  </div>
+</div>
+<script>
+function aswitch(tab){
+  document.getElementById('a-list').style.display = tab==='list' ? 'block' : 'none';
+  document.getElementById('a-manual').style.display = tab==='manual' ? 'block' : 'none';
+  document.getElementById('a-log').style.display = tab==='log' ? 'flex' : 'none';
+  document.querySelectorAll('.atab').forEach(function(b){
+    if(b.dataset.atab===tab){ b.style.color='#185FA5'; b.style.borderBottom='2px solid #185FA5'; }
+    else { b.style.color='#5f5e5a'; b.style.borderBottom='2px solid transparent'; }
+  });
+}
+</script>
+</body>
+</html>

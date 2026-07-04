@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프로젝트 관리 - WBS 목업</title>
+<link rel="stylesheet" href="_shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">프로젝트 관리</span></div>
+
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+    <div style="display:flex; gap:6px;">
+      <button style="background:#E6F1FB; color:#0C447C; border-color:#85B7EB;"><i class="ti ti-layout-grid"></i> 간트</button>
+      <button><i class="ti ti-calendar"></i> 캘린더</button>
+    </div>
+    <button><i class="ti ti-plus"></i> 프로젝트 추가</button>
+  </div>
+
+  <div style="display:flex; gap:12px;">
+    <div id="ganttCol" style="flex:1; min-width:0;">
+      <div style="border:1px solid #d3d1c7; border-radius:8px; overflow:hidden;">
+        <div style="display:grid; grid-template-columns:160px repeat(7,1fr); background:#f1efe8; font-size:12px; color:#5f5e5a;">
+          <div style="padding:8px;">프로젝트</div>
+          <div style="padding:8px; text-align:center;">7/1</div>
+          <div style="padding:8px; text-align:center;">7/2</div>
+          <div style="padding:8px; text-align:center;">7/3</div>
+          <div style="padding:8px; text-align:center;">7/4</div>
+          <div style="padding:8px; text-align:center;">7/5</div>
+          <div style="padding:8px; text-align:center;">7/6</div>
+          <div style="padding:8px; text-align:center;">7/7</div>
+        </div>
+
+        <div style="border-top:1px solid #d3d1c7;">
+          <div onclick="toggleProject('p103')" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+            <div style="padding:10px 8px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:4px;">
+              <i id="p103-caret" class="ti ti-chevron-right" style="transition:transform .15s;"></i>홈페이지 리뉴얼
+            </div>
+            <div style="grid-column:2/6; padding:10px 4px;"><div style="height:14px; background:#AFA9EC; border-radius:4px;"></div></div>
+          </div>
+          <div id="p103-groups" style="display:none;">
+            <div onclick="event.stopPropagation(); openPanel('디자인팀')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">디자인팀</div>
+              <div style="grid-column:2/5; padding:8px 4px;"><div style="height:12px; background:#5DCAA5; border-radius:4px;"></div></div>
+            </div>
+            <div onclick="event.stopPropagation(); openPanel('개발팀')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">개발팀</div>
+              <div style="grid-column:3/8; padding:8px 4px;"><div style="height:12px; background:#F0997B; border-radius:4px;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid #d3d1c7;">
+          <div onclick="toggleProject('p104')" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+            <div style="padding:10px 8px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:4px;">
+              <i id="p104-caret" class="ti ti-chevron-right" style="transition:transform .15s;"></i>신제품 런칭
+            </div>
+            <div style="grid-column:1/9; padding:10px 4px;"><div style="height:14px; background:#ED93B1; border-radius:4px;"></div></div>
+          </div>
+          <div id="p104-groups" style="display:none;">
+            <div onclick="event.stopPropagation(); openPanel('기획 단계')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">1. 기획 단계</div>
+              <div style="grid-column:2/4; padding:8px 4px;"><div style="height:12px; background:#EF9F27; border-radius:4px;"></div></div>
+            </div>
+            <div onclick="event.stopPropagation(); openPanel('개발 단계')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
+              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">2. 개발 단계</div>
+              <div style="grid-column:4/8; padding:8px 4px;"><div style="height:12px; background:#85B7EB; border-radius:4px;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="tiny muted" style="margin-top:8px;">프로젝트를 클릭하면 확장/축소됩니다. 팀/단계 진행 bar를 클릭하면 우측 패널이 열립니다.</p>
+    </div>
+
+    <div id="sidePanel" style="display:none; width:280px; flex-shrink:0; background:#fff; border:1px solid #d3d1c7; border-radius:12px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #d3d1c7;">
+        <span id="panelTitle" style="font-size:14px; font-weight:500;"></span>
+        <i class="ti ti-x" style="cursor:pointer; color:#5f5e5a;" onclick="closePanel()"></i>
+      </div>
+      <div style="display:flex; border-bottom:1px solid #d3d1c7;">
+        <div class="tab-btn active" onclick="switchTab('flow')" data-tab="flow" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; border-bottom:2px solid #185FA5; color:#185FA5;">워크플로우</div>
+        <div class="tab-btn" onclick="switchTab('members')" data-tab="members" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; color:#5f5e5a;">참여자</div>
+        <div class="tab-btn" onclick="switchTab('log')" data-tab="log" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; color:#5f5e5a;">로그</div>
+      </div>
+
+      <div id="tab-flow" style="padding:12px 14px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:8px;">
+          <div style="width:26px; height:26px; border-radius:50%; background:#E6F1FB; color:#0C447C; font-size:11px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0;">김민</div>
+          <div style="font-size:12px; flex:1;">
+            <div><strong>김민수</strong> <span class="muted">10:24</span></div>
+            <div style="margin-top:2px;">1차 시안 첨부합니다. <span style="color:#185FA5;">@박지현</span> 확인 부탁드려요 <i class="ti ti-paperclip"></i> 시안_v1.fig</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div style="width:26px; height:26px; border-radius:50%; background:#EAF3DE; color:#27500A; font-size:11px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0;">박지</div>
+          <div style="font-size:12px; flex:1;">
+            <div><strong>박지현</strong> <span class="muted">10:41</span></div>
+            <div style="margin-top:2px;">확인했습니다 <i class="ti ti-thumb-up"></i> <span style="font-size:11px; color:#3B6D11;">확인됨</span></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:4px;">
+          <input placeholder="메시지 입력, @로 멘션" style="flex:1;">
+          <button><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+
+      <div id="tab-members" style="display:none; padding:12px 14px; flex-direction:column; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px;"><div style="width:22px; height:22px; border-radius:50%; background:#E6F1FB; color:#0C447C; font-size:10px; display:flex; align-items:center; justify-content:center;">김</div>김민수 <span class="muted tiny">· 리더</span></div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px;"><div style="width:22px; height:22px; border-radius:50%; background:#EAF3DE; color:#27500A; font-size:10px; display:flex; align-items:center; justify-content:center;">박</div>박지현</div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><div style="width:22px; height:22px; border-radius:50%; background:#FAEEDA; color:#633806; font-size:10px; display:flex; align-items:center; justify-content:center;">최</div>최서연 <span class="muted tiny">· 외부(프리랜서)</span></div>
+      </div>
+
+      <div id="tab-log" style="display:none; padding:12px 14px; flex-direction:column; gap:8px;">
+        <div style="font-size:12px;"><span class="muted">10:41</span> 박지현이 업무를 완료 처리함</div>
+        <div style="font-size:12px; margin-top:6px;"><span class="muted">10:24</span> 김민수가 파일을 첨부함</div>
+        <div style="font-size:12px; margin-top:6px;"><span class="muted">어제 18:02</span> 마감일이 3일 연장됨</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>.hoverrow:hover{background:#f1efe8;}</style>
+<script>
+function toggleProject(id){
+  const el=document.getElementById(id+'-groups');
+  const caret=document.getElementById(id+'-caret');
+  const open = el.style.display==='block';
+  el.style.display = open ? 'none' : 'block';
+  caret.style.transform = open ? 'rotate(0deg)' : 'rotate(90deg)';
+}
+function openPanel(name){
+  document.getElementById('sidePanel').style.display='block';
+  document.getElementById('panelTitle').textContent = name + ' 워크플로우';
+  switchTab('flow');
+}
+function closePanel(){
+  document.getElementById('sidePanel').style.display='none';
+}
+function switchTab(tab){
+  ['flow','members','log'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display = (t===tab) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){
+    if(b.dataset.tab===tab){ b.style.color='#185FA5'; b.style.borderBottom='2px solid #185FA5'; }
+    else { b.style.color='#5f5e5a'; b.style.borderBottom='2px solid transparent'; }
+  });
+}
+</script>
+</body>
+</html>
