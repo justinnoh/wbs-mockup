@@ -20,7 +20,7 @@
         <button data-view="cal" onclick="setView('cal')" class="px-3 py-1.5 rounded-md text-[11.5px] font-semibold text-[#86868f] hover:bg-[#f4f2f0]">캘린더</button>
       </div>
       <span class="mono text-[11.5px] font-semibold text-[#52525b] bg-white border border-[#ececef] px-2.5 py-1.5 rounded-lg">2026.06 – 07</span>
-      <button class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]">
+      <button onclick="openNewProj()" class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         프로젝트 추가
       </button>
@@ -115,6 +115,130 @@
     <button class="w-9 h-9 rounded-lg bg-[#f06a6a] text-white flex items-center justify-center shrink-0">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
+  </div>
+</div>
+
+<!-- 프로젝트 추가 다이얼로그 -->
+<div id="npBackdrop" class="hidden fixed inset-0 bg-[rgba(20,18,16,0.34)] z-[60] flex items-start justify-center overflow-y-auto py-8" onclick="if(event.target===this)closeNewProj()">
+  <div class="w-[560px] max-w-[94vw] bg-white rounded-2xl flex flex-col" style="box-shadow:0 24px 60px rgba(20,18,16,0.22)">
+    <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#ececef]">
+      <div>
+        <div class="text-[16px] font-extrabold tracking-tight">새 프로젝트</div>
+        <div class="text-[11px] text-[#a3a3ad] font-medium mt-0.5">프로젝트 ID는 자동 발급됩니다 · <span class="mono">p112</span></div>
+      </div>
+      <button onclick="closeNewProj()" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#9a9aa3] hover:bg-[#f4f2f0]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="px-6 py-5 flex flex-col gap-5">
+      <!-- 프로젝트명 -->
+      <div>
+        <label class="text-[11.5px] font-bold text-[#3d3d45]">프로젝트명 <span class="text-[#e24b4a]">*</span></label>
+        <input placeholder="예) 2026 홈페이지 리뉴얼" class="mt-1.5 w-full text-[13px] font-medium border border-[#ececef] rounded-[10px] px-3.5 py-2.5 focus:outline-none focus:border-[#f06a6a] placeholder-[#b4b4bc]">
+      </div>
+
+      <!-- 타입 -->
+      <div>
+        <label class="text-[11.5px] font-bold text-[#3d3d45]">프로젝트 타입 <span class="text-[#e24b4a]">*</span> <span class="font-medium text-[#a3a3ad]">· 생성 후 변경 불가</span></label>
+        <div class="grid grid-cols-2 gap-2.5 mt-1.5">
+          <button id="npTeam" onclick="npType('team')" class="text-left rounded-xl border-2 border-[#f06a6a] bg-[#fdeeee] px-4 py-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[12.5px] font-bold text-[#d94f4f]">팀 프로젝트</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white text-[#d94f4f]">팀 &gt; 업무</span>
+            </div>
+            <div class="text-[10.5px] text-[#b06060] font-medium mt-1 leading-relaxed">팀을 필수로 구성하고 팀 아래에 업무를 둡니다. 업무는 그 팀 소속에게만 배정됩니다.</div>
+          </button>
+          <button id="npStage" onclick="npType('stage')" class="text-left rounded-xl border-2 border-[#ececef] bg-white px-4 py-3 hover:border-[#dcdce2]">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[12.5px] font-bold text-[#3d3d45]">단계 프로젝트</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#f4f2f0] text-[#86868f]">단계 &gt; 업무</span>
+            </div>
+            <div class="text-[10.5px] text-[#86868f] font-medium mt-1 leading-relaxed">순서 있는 단계를 구성하고 각 단계 아래에 업무를 둡니다. 담당자는 팀과 무관하게 배정됩니다.</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 템플릿 -->
+      <div>
+        <label class="text-[11.5px] font-bold text-[#3d3d45]">템플릿 <span class="font-medium text-[#a3a3ad]">· 관리자가 등록한 템플릿, 생성 시 기본 구성이 자동 추가됩니다</span></label>
+        <select id="npTpl" onchange="npPreview()" class="mt-1.5 w-full text-[13px] font-medium border border-[#ececef] rounded-[10px] px-3 py-2.5 focus:outline-none focus:border-[#f06a6a] bg-white">
+          <option value="brand">브랜드 캠페인 표준 (팀 3개 · 마일스톤 2개 · 35일)</option>
+          <option value="dev">신규 서비스 개발 (팀 4개 · 마일스톤 3개 · 60일)</option>
+          <option value="none">템플릿 없이 시작</option>
+        </select>
+        <div id="npPrev" class="mt-2 flex flex-wrap gap-1.5"></div>
+        <div class="text-[10.5px] text-[#a3a3ad] font-medium mt-1.5">생성 시 커스텀하게 변경할 수 있습니다.</div>
+      </div>
+
+      <!-- 기간 -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="text-[11.5px] font-bold text-[#3d3d45]">시작일 <span class="text-[#e24b4a]">*</span></label>
+          <input type="date" value="2026-07-06" class="mt-1.5 w-full mono text-[12.5px] font-medium border border-[#ececef] rounded-[10px] px-3 py-2.5 focus:outline-none focus:border-[#f06a6a]">
+        </div>
+        <div>
+          <label class="text-[11.5px] font-bold text-[#3d3d45]">완료 예정일</label>
+          <input type="date" value="2026-08-10" class="mt-1.5 w-full mono text-[12.5px] font-medium border border-[#ececef] rounded-[10px] px-3 py-2.5 focus:outline-none focus:border-[#f06a6a]">
+        </div>
+      </div>
+
+      <!-- 리더 -->
+      <div>
+        <label class="text-[11.5px] font-bold text-[#3d3d45]">프로젝트 리더 <span class="text-[#e24b4a]">*</span> <span class="font-medium text-[#a3a3ad]">· 1명 이상</span></label>
+        <div class="mt-1.5 flex flex-wrap items-center gap-1.5 border border-[#ececef] rounded-[10px] px-2.5 py-2">
+          <span class="flex items-center gap-1.5 text-[11.5px] font-bold bg-[#fdeeee] text-[#d94f4f] pl-1 pr-2 py-1 rounded-lg">
+            <span class="w-5 h-5 rounded-md bg-white flex items-center justify-center text-[9px]">지훈</span>김지훈
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </span>
+          <input placeholder="이름으로 검색해 추가" class="flex-1 min-w-[120px] text-[12px] font-medium focus:outline-none placeholder-[#b4b4bc]">
+        </div>
+      </div>
+
+      <!-- 참여자 -->
+      <div>
+        <div class="flex items-center justify-between">
+          <label class="text-[11.5px] font-bold text-[#3d3d45]">참여자</label>
+          <button class="flex items-center gap-1 text-[10.5px] font-bold text-[#86868f] hover:text-[#3d3d45]">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            외부 구성원 초대
+          </button>
+        </div>
+        <div class="mt-1.5 flex flex-wrap items-center gap-1.5 border border-[#ececef] rounded-[10px] px-2.5 py-2">
+          <span class="flex items-center gap-1.5 text-[11.5px] font-semibold bg-[#f4f2f0] text-[#3d3d45] pl-1 pr-2 py-1 rounded-lg">
+            <span class="w-5 h-5 rounded-md bg-white flex items-center justify-center text-[9px] font-bold" style="color:#f06a6a">서연</span>이서연
+          </span>
+          <span class="flex items-center gap-1.5 text-[11.5px] font-semibold bg-[#f4f2f0] text-[#3d3d45] pl-1 pr-2 py-1 rounded-lg">
+            <span class="w-5 h-5 rounded-md bg-white flex items-center justify-center text-[9px] font-bold" style="color:#4573d2">준호</span>박준호
+          </span>
+          <span class="flex items-center gap-1.5 text-[11.5px] font-semibold bg-[#faf0da] text-[#8a6116] pl-1 pr-2 py-1 rounded-lg">
+            <span class="w-5 h-5 rounded-md bg-white flex items-center justify-center text-[9px] font-bold" style="color:#b07c15">서연</span>최서연 · 외부
+          </span>
+          <input placeholder="이름으로 검색해 추가" class="flex-1 min-w-[120px] text-[12px] font-medium focus:outline-none placeholder-[#b4b4bc]">
+        </div>
+        <div class="text-[10.5px] text-[#a3a3ad] font-medium mt-1.5">외부 구성원은 계약 기간을 설정하며, 참여한 프로젝트에만 접근할 수 있습니다.</div>
+      </div>
+
+      <!-- Notion 가져오기 -->
+      <div class="flex items-center justify-between rounded-xl bg-[#faf8f6] border border-[#ececef] px-4 py-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-[#18181b] text-white flex items-center justify-center text-[11px] font-extrabold">N</div>
+          <div>
+            <div class="text-[12px] font-bold">Notion에서 가져오기</div>
+            <div class="text-[10.5px] text-[#a3a3ad] font-medium">Notion 프로젝트 DB를 불러와 자동으로 생성합니다</div>
+          </div>
+        </div>
+        <button class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-[#ececef] bg-white hover:bg-[#f4f2f0]">가져오기</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between px-6 py-4 border-t border-[#ececef]">
+      <div class="text-[10.5px] text-[#a3a3ad] font-medium">생성하면 Google Drive에 프로젝트 폴더가 자동으로 만들어집니다</div>
+      <div class="flex gap-2">
+        <button onclick="closeNewProj()" class="text-[11.5px] font-semibold px-4 py-2 rounded-lg border border-[#ececef] hover:bg-[#f4f2f0]">취소</button>
+        <button onclick="closeNewProj()" class="text-[11.5px] font-bold px-4 py-2 rounded-lg bg-[#f06a6a] text-white hover:bg-[#d94f4f]">프로젝트 생성</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -353,6 +477,33 @@ function renderCal(){
   }).join('');
 }
 renderCal();
+
+// ===== 프로젝트 추가 다이얼로그 =====
+let npT='team';
+const TPL={
+  brand:{team:['디자인팀','마케팅팀','검수 TF'],stage:['1. 기획','2. 제작','3. 검수'],ms:['시안 확정','최종 검수']},
+  dev:{team:['기획팀','디자인팀','개발팀','QA팀'],stage:['1. 요구정의','2. 설계','3. 개발','4. QA'],ms:['설계 승인','베타 오픈','정식 출시']},
+  none:{team:[],stage:[],ms:[]}
+};
+function openNewProj(){ document.getElementById('npBackdrop').classList.remove('hidden'); npPreview(); }
+function closeNewProj(){ document.getElementById('npBackdrop').classList.add('hidden'); }
+function npType(t){
+  npT=t;
+  const on='text-left rounded-xl border-2 border-[#f06a6a] bg-[#fdeeee] px-4 py-3';
+  const off='text-left rounded-xl border-2 border-[#ececef] bg-white px-4 py-3 hover:border-[#dcdce2]';
+  document.getElementById('npTeam').className = t==='team'?on:off;
+  document.getElementById('npStage').className = t==='stage'?on:off;
+  document.querySelector('#npTeam span').className=`text-[12.5px] font-bold ${t==='team'?'text-[#d94f4f]':'text-[#3d3d45]'}`;
+  document.querySelector('#npStage span').className=`text-[12.5px] font-bold ${t==='stage'?'text-[#d94f4f]':'text-[#3d3d45]'}`;
+  npPreview();
+}
+function npPreview(){
+  const k=document.getElementById('npTpl').value, tpl=TPL[k];
+  const groups = npT==='team'?tpl.team:tpl.stage;
+  const chips = groups.map(g=>`<span class="text-[10.5px] font-bold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">${g}</span>`)
+    .concat(tpl.ms.map(m=>`<span class="flex items-center gap-1 text-[10.5px] font-bold px-2 py-1 rounded-md" style="background:rgba(240,86,63,.1);color:#f0563f"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>${m}</span>`));
+  document.getElementById('npPrev').innerHTML = chips.length?chips.join(''):'<span class="text-[10.5px] text-[#b4b4bc] font-medium">빈 프로젝트로 시작합니다</span>';
+}
 </script>
 </body>
 </html>
