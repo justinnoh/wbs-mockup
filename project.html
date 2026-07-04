@@ -15,9 +15,9 @@
       <span class="text-[12px] text-[#a3a3ad] font-medium">프로젝트를 클릭해 팀/단계를 펼치고, 진행 bar를 클릭하면 상세가 열립니다</span>
     </div>
     <div class="flex items-center gap-2">
-      <div class="flex rounded-lg border border-[#ececef] bg-white p-0.5">
-        <button class="px-3 py-1.5 rounded-md text-[11.5px] font-bold bg-[#fdeeee] text-[#d94f4f]">간트</button>
-        <button class="px-3 py-1.5 rounded-md text-[11.5px] font-semibold text-[#86868f] hover:bg-[#f4f2f0]">캘린더</button>
+      <div class="flex rounded-lg border border-[#ececef] bg-white p-0.5" id="viewToggle">
+        <button data-view="gantt" onclick="setView('gantt')" class="px-3 py-1.5 rounded-md text-[11.5px] font-bold bg-[#fdeeee] text-[#d94f4f]">간트</button>
+        <button data-view="cal" onclick="setView('cal')" class="px-3 py-1.5 rounded-md text-[11.5px] font-semibold text-[#86868f] hover:bg-[#f4f2f0]">캘린더</button>
       </div>
       <span class="mono text-[11.5px] font-semibold text-[#52525b] bg-white border border-[#ececef] px-2.5 py-1.5 rounded-lg">2026.06 – 07</span>
       <button class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]">
@@ -27,6 +27,7 @@
     </div>
   </div>
 
+  <div id="ganttView">
   <!-- 범례 -->
   <div class="flex items-center gap-4 px-6 pb-3 text-[11px] font-semibold text-[#86868f]">
     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-[3px] bg-[#c9c9d2]"></span>완료</span>
@@ -50,6 +51,35 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 캘린더 뷰 -->
+  <div id="calView" class="hidden px-6 pb-8">
+    <div class="flex items-center justify-between pb-3">
+      <div class="flex items-center gap-2">
+        <button class="w-7 h-7 rounded-lg border border-[#ececef] bg-white flex items-center justify-center text-[#86868f] hover:bg-[#f4f2f0]">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="mono text-[13px] font-semibold text-[#3d3d45]">2026년 6월</span>
+        <button class="w-7 h-7 rounded-lg border border-[#ececef] bg-white flex items-center justify-center text-[#86868f] hover:bg-[#f4f2f0]">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <span class="text-[11px] text-[#a3a3ad] font-medium">마감일 기준 · 항목을 클릭하면 상세가 열립니다</span>
+    </div>
+    <div class="rounded-[13px] border border-[#e7e7ec] bg-white overflow-hidden">
+      <div class="grid grid-cols-7 bg-[#faf8f6] border-b border-[#ececef]">
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#e0563f]">일</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#86868f]">월</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#86868f]">화</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#86868f]">수</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#86868f]">목</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#86868f]">금</div>
+        <div class="px-3 py-2 text-[10.5px] font-bold text-[#4573d2]">토</div>
+      </div>
+      <div class="grid grid-cols-7" id="calGrid"></div>
     </div>
   </div>
 </div>
@@ -274,6 +304,55 @@ function dTab(t){
 }
 open_[0]=true; open_[2]=true;
 render();
+
+// ===== 보기 전환 (간트/캘린더) =====
+function setView(v){
+  document.getElementById('ganttView').classList.toggle('hidden', v!=='gantt');
+  document.getElementById('calView').classList.toggle('hidden', v!=='cal');
+  document.querySelectorAll('#viewToggle button').forEach(b=>{
+    const on=b.dataset.view===v;
+    b.className=`px-3 py-1.5 rounded-md text-[11.5px] ${on?'font-bold bg-[#fdeeee] text-[#d94f4f]':'font-semibold text-[#86868f] hover:bg-[#f4f2f0]'}`;
+  });
+}
+
+// ===== 캘린더 렌더 (2026년 6월, 6/1=월요일, 오늘=6/26) =====
+function renderCal(){
+  // 마감 항목 수집: 'M/D' -> [{n, pi, gi, color, status}]
+  const dues={};
+  DATA.forEach((p,pi)=>p.groups.forEach((g,gi)=>{
+    (dues[g.due]=dues[g.due]||[]).push({n:g.n,pi,gi,color:p.color,status:g.status,dueToday:g.dueToday});
+  }));
+  const cells=[];
+  // 6월 시작 요일: 월(인덱스1) → 앞에 일요일 1칸(5/31)
+  cells.push({d:'5/31',dim:true});
+  for(let d=1;d<=30;d++) cells.push({d:`6/${d}`,dim:false});
+  for(let d=1;d<=4;d++) cells.push({d:`7/${d}`,dim:true});
+  const TODAY='6/26';
+  document.getElementById('calGrid').innerHTML=cells.map(c=>{
+    const items=dues[c.d]||[];
+    const isToday=c.d===TODAY;
+    const dayNum=c.d.split('/')[1];
+    return `
+    <div class="min-h-[92px] border-b border-r border-[#f0f0f3] px-2 py-1.5 ${c.dim?'bg-[#fcfcfd]':''} ${isToday?'bg-[rgba(240,86,63,0.04)]':''}">
+      <div class="flex items-center gap-1 mb-1">
+        <span class="mono text-[11px] font-semibold ${c.dim?'text-[#c9c9d2]':isToday?'text-white bg-[#f0563f] rounded-md px-1.5 py-0.5':'text-[#5b5b64]'}">${dayNum}</span>
+        ${isToday?'<span class="text-[9px] font-bold text-[#f0563f]">오늘</span>':''}
+      </div>
+      <div class="flex flex-col gap-1">
+        ${items.map(it=>`
+        <div onclick="openDrawer(${it.pi},${it.gi})" class="text-[10px] font-bold px-1.5 py-1 rounded-md cursor-pointer truncate leading-tight"
+          style="${it.status==='done'
+            ? `background:${rgba(it.color,0.10)};color:${rgba(it.color,0.75)};text-decoration:line-through`
+            : it.dueToday
+              ? `background:${it.color};color:#fff;box-shadow:0 0 0 2px ${rgba(T.today,0.45)}`
+              : `background:${rgba(it.color,0.14)};color:${it.color}`}">
+          ${it.n}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+renderCal();
 </script>
 </body>
 </html>
