@@ -3,150 +3,277 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>프로젝트 관리 - WBS 목업</title>
-<link rel="stylesheet" href="_shared.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<title>프로젝트 관리 · WBS</title>
+<script src="head.js"></script>
 </head>
-<body>
-<div class="page">
-  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">프로젝트 관리</span></div>
-
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-    <div style="display:flex; gap:6px;">
-      <button style="background:#E6F1FB; color:#0C447C; border-color:#85B7EB;"><i class="ti ti-layout-grid"></i> 간트</button>
-      <button><i class="ti ti-calendar"></i> 캘린더</button>
+<body data-page="project">
+<div id="content">
+  <!-- 상단 액션 바 -->
+  <div class="flex items-center justify-between px-6 pt-5 pb-4">
+    <div class="flex items-baseline gap-2.5">
+      <h1 class="text-[16px] font-bold tracking-tight">프로젝트 관리</h1>
+      <span class="text-[12px] text-[#a3a3ad] font-medium">프로젝트를 클릭해 팀/단계를 펼치고, 진행 bar를 클릭하면 상세가 열립니다</span>
     </div>
-    <button><i class="ti ti-plus"></i> 프로젝트 추가</button>
+    <div class="flex items-center gap-2">
+      <div class="flex rounded-lg border border-[#ececef] bg-white p-0.5">
+        <button class="px-3 py-1.5 rounded-md text-[11.5px] font-bold bg-[#fdeeee] text-[#d94f4f]">간트</button>
+        <button class="px-3 py-1.5 rounded-md text-[11.5px] font-semibold text-[#86868f] hover:bg-[#f4f2f0]">캘린더</button>
+      </div>
+      <span class="mono text-[11.5px] font-semibold text-[#52525b] bg-white border border-[#ececef] px-2.5 py-1.5 rounded-lg">2026.06 – 07</span>
+      <button class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        프로젝트 추가
+      </button>
+    </div>
   </div>
 
-  <div style="display:flex; gap:12px;">
-    <div id="ganttCol" style="flex:1; min-width:0;">
-      <div style="border:1px solid #d3d1c7; border-radius:8px; overflow:hidden;">
-        <div style="display:grid; grid-template-columns:160px repeat(7,1fr); background:#f1efe8; font-size:12px; color:#5f5e5a;">
-          <div style="padding:8px;">프로젝트</div>
-          <div style="padding:8px; text-align:center;">7/1</div>
-          <div style="padding:8px; text-align:center;">7/2</div>
-          <div style="padding:8px; text-align:center;">7/3</div>
-          <div style="padding:8px; text-align:center;">7/4</div>
-          <div style="padding:8px; text-align:center;">7/5</div>
-          <div style="padding:8px; text-align:center;">7/6</div>
-          <div style="padding:8px; text-align:center;">7/7</div>
-        </div>
+  <!-- 범례 -->
+  <div class="flex items-center gap-4 px-6 pb-3 text-[11px] font-semibold text-[#86868f]">
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-[3px] bg-[#c9c9d2]"></span>완료</span>
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-[3px] bg-[#f06a6a]"></span>진행 중</span>
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-[3px] border-[1.5px] border-dashed border-[#b9b9c2]"></span>예정</span>
+    <span class="flex items-center gap-1.5 ml-2"><span class="w-0.5 h-3 bg-[#f0563f]"></span>오늘</span>
+  </div>
 
-        <div style="border-top:1px solid #d3d1c7;">
-          <div onclick="toggleProject('p103')" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-            <div style="padding:10px 8px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:4px;">
-              <i id="p103-caret" class="ti ti-chevron-right" style="transition:transform .15s;"></i>홈페이지 리뉴얼
-            </div>
-            <div style="grid-column:2/6; padding:10px 4px;"><div style="height:14px; background:#AFA9EC; border-radius:4px;"></div></div>
-          </div>
-          <div id="p103-groups" style="display:none;">
-            <div onclick="event.stopPropagation(); openPanel('디자인팀')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">디자인팀</div>
-              <div style="grid-column:2/5; padding:8px 4px;"><div style="height:12px; background:#5DCAA5; border-radius:4px;"></div></div>
-            </div>
-            <div onclick="event.stopPropagation(); openPanel('개발팀')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">개발팀</div>
-              <div style="grid-column:3/8; padding:8px 4px;"><div style="height:12px; background:#F0997B; border-radius:4px;"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div style="border-top:1px solid #d3d1c7;">
-          <div onclick="toggleProject('p104')" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-            <div style="padding:10px 8px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:4px;">
-              <i id="p104-caret" class="ti ti-chevron-right" style="transition:transform .15s;"></i>신제품 런칭
-            </div>
-            <div style="grid-column:1/9; padding:10px 4px;"><div style="height:14px; background:#ED93B1; border-radius:4px;"></div></div>
-          </div>
-          <div id="p104-groups" style="display:none;">
-            <div onclick="event.stopPropagation(); openPanel('기획 단계')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">1. 기획 단계</div>
-              <div style="grid-column:2/4; padding:8px 4px;"><div style="height:12px; background:#EF9F27; border-radius:4px;"></div></div>
-            </div>
-            <div onclick="event.stopPropagation(); openPanel('개발 단계')" class="hoverrow" style="display:grid; grid-template-columns:160px repeat(7,1fr); align-items:center; cursor:pointer;">
-              <div style="padding:8px 8px 8px 28px; font-size:12px; color:#5f5e5a;">2. 개발 단계</div>
-              <div style="grid-column:4/8; padding:8px 4px;"><div style="height:12px; background:#85B7EB; border-radius:4px;"></div></div>
-            </div>
-          </div>
-        </div>
+  <!-- 간트 -->
+  <div class="px-6 pb-8">
+    <div class="rounded-[13px] border border-[#e7e7ec] bg-white overflow-hidden">
+      <div class="flex bg-[#faf8f6] border-b border-[#ececef]">
+        <div class="w-[290px] shrink-0 px-4 py-2.5 text-[11px] font-bold text-[#86868f] border-r border-[#ececef] flex items-center">프로젝트 · 팀/단계</div>
+        <div class="flex-1 flex" id="weekHead"></div>
       </div>
-      <p class="tiny muted" style="margin-top:8px;">프로젝트를 클릭하면 확장/축소됩니다. 팀/단계 진행 bar를 클릭하면 우측 패널이 열립니다.</p>
-    </div>
-
-    <div id="sidePanel" style="display:none; width:280px; flex-shrink:0; background:#fff; border:1px solid #d3d1c7; border-radius:12px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #d3d1c7;">
-        <span id="panelTitle" style="font-size:14px; font-weight:500;"></span>
-        <i class="ti ti-x" style="cursor:pointer; color:#5f5e5a;" onclick="closePanel()"></i>
-      </div>
-      <div style="display:flex; border-bottom:1px solid #d3d1c7;">
-        <div class="tab-btn active" onclick="switchTab('flow')" data-tab="flow" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; border-bottom:2px solid #185FA5; color:#185FA5;">워크플로우</div>
-        <div class="tab-btn" onclick="switchTab('members')" data-tab="members" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; color:#5f5e5a;">참여자</div>
-        <div class="tab-btn" onclick="switchTab('log')" data-tab="log" style="flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; color:#5f5e5a;">로그</div>
-      </div>
-
-      <div id="tab-flow" style="padding:12px 14px; display:flex; flex-direction:column; gap:10px;">
-        <div style="display:flex; gap:8px;">
-          <div style="width:26px; height:26px; border-radius:50%; background:#E6F1FB; color:#0C447C; font-size:11px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0;">김민</div>
-          <div style="font-size:12px; flex:1;">
-            <div><strong>김민수</strong> <span class="muted">10:24</span></div>
-            <div style="margin-top:2px;">1차 시안 첨부합니다. <span style="color:#185FA5;">@박지현</span> 확인 부탁드려요 <i class="ti ti-paperclip"></i> 시안_v1.fig</div>
+      <div class="flex relative">
+        <div class="w-[290px] shrink-0 border-r border-[#ececef]" id="leftCol"></div>
+        <div class="flex-1 relative" id="rightCol" style="background-image:linear-gradient(90deg,#efeff3 0 1px,transparent 1px 100%);background-size:20% 100%">
+          <div class="absolute top-0 bottom-0 w-[2px] bg-[#f0563f] z-[4]" style="left:71.43%">
+            <div class="absolute top-1.5 left-1/2 -translate-x-1/2 bg-[#f0563f] text-white mono text-[9px] font-semibold px-1.5 py-0.5 rounded whitespace-nowrap">오늘</div>
           </div>
         </div>
-        <div style="display:flex; gap:8px;">
-          <div style="width:26px; height:26px; border-radius:50%; background:#EAF3DE; color:#27500A; font-size:11px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0;">박지</div>
-          <div style="font-size:12px; flex:1;">
-            <div><strong>박지현</strong> <span class="muted">10:41</span></div>
-            <div style="margin-top:2px;">확인했습니다 <i class="ti ti-thumb-up"></i> <span style="font-size:11px; color:#3B6D11;">확인됨</span></div>
-          </div>
-        </div>
-        <div style="display:flex; gap:6px; margin-top:4px;">
-          <input placeholder="메시지 입력, @로 멘션" style="flex:1;">
-          <button><i class="ti ti-send"></i></button>
-        </div>
-      </div>
-
-      <div id="tab-members" style="display:none; padding:12px 14px; flex-direction:column; gap:8px;">
-        <div style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px;"><div style="width:22px; height:22px; border-radius:50%; background:#E6F1FB; color:#0C447C; font-size:10px; display:flex; align-items:center; justify-content:center;">김</div>김민수 <span class="muted tiny">· 리더</span></div>
-        <div style="display:flex; align-items:center; gap:8px; font-size:12px; margin-bottom:8px;"><div style="width:22px; height:22px; border-radius:50%; background:#EAF3DE; color:#27500A; font-size:10px; display:flex; align-items:center; justify-content:center;">박</div>박지현</div>
-        <div style="display:flex; align-items:center; gap:8px; font-size:12px;"><div style="width:22px; height:22px; border-radius:50%; background:#FAEEDA; color:#633806; font-size:10px; display:flex; align-items:center; justify-content:center;">최</div>최서연 <span class="muted tiny">· 외부(프리랜서)</span></div>
-      </div>
-
-      <div id="tab-log" style="display:none; padding:12px 14px; flex-direction:column; gap:8px;">
-        <div style="font-size:12px;"><span class="muted">10:41</span> 박지현이 업무를 완료 처리함</div>
-        <div style="font-size:12px; margin-top:6px;"><span class="muted">10:24</span> 김민수가 파일을 첨부함</div>
-        <div style="font-size:12px; margin-top:6px;"><span class="muted">어제 18:02</span> 마감일이 3일 연장됨</div>
       </div>
     </div>
   </div>
 </div>
 
-<style>.hoverrow:hover{background:#f1efe8;}</style>
+<!-- Drawer -->
+<div id="backdrop" class="fixed inset-0 bg-[rgba(20,18,16,0.28)] z-40 opacity-0 pointer-events-none transition-opacity duration-200" onclick="closeDrawer()"></div>
+<div id="drawer" class="fixed top-0 right-0 h-screen w-[412px] max-w-[92vw] bg-white z-50 flex flex-col translate-x-[108%] transition-transform duration-300" style="box-shadow:-10px 0 40px rgba(20,18,16,0.14)">
+  <div class="px-5 pt-4 pb-0 border-b border-[#ececef]">
+    <div class="flex items-center justify-between mb-2.5">
+      <span id="dTag" class="inline-flex text-[11px] font-bold px-2.5 py-1 rounded-[7px]"></span>
+      <button onclick="closeDrawer()" class="w-8 h-8 rounded-lg flex items-center justify-center text-[#9a9aa3] hover:bg-[#f4f2f0] hover:text-[#52525b]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="dTitle" class="text-[17px] font-extrabold tracking-tight leading-snug"></div>
+    <div class="flex items-center gap-1.5 mt-1.5 mb-3.5">
+      <span id="dDot" class="w-2 h-2 rounded-[2px]"></span>
+      <span id="dProj" class="text-[12px] text-[#86868f] font-semibold"></span>
+    </div>
+    <div class="flex" id="dTabs">
+      <button data-tab="flow" onclick="dTab('flow')" class="flex-1 pb-2.5 text-[12px] font-bold border-b-2 border-[#f06a6a] text-[#d94f4f]">워크플로우</button>
+      <button data-tab="members" onclick="dTab('members')" class="flex-1 pb-2.5 text-[12px] font-semibold border-b-2 border-transparent text-[#86868f]">참여자</button>
+      <button data-tab="log" onclick="dTab('log')" class="flex-1 pb-2.5 text-[12px] font-semibold border-b-2 border-transparent text-[#86868f]">로그</button>
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto">
+    <div id="tab-flow" class="px-5 py-4 flex flex-col gap-4"></div>
+    <div id="tab-members" class="hidden px-5 py-4 flex-col gap-1"></div>
+    <div id="tab-log" class="hidden px-5 py-4 flex-col gap-2.5"></div>
+  </div>
+  <div id="flowInput" class="flex items-center gap-2 px-4 py-3 border-t border-[#ececef]">
+    <input placeholder="메시지 입력 · @로 멘션" class="flex-1 text-[12px] font-medium bg-[#f4f2f0] rounded-lg px-3 py-2.5 focus:outline-none placeholder-[#b4b4bc]">
+    <button class="w-9 h-9 rounded-lg bg-[#f06a6a] text-white flex items-center justify-center shrink-0">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
 <script>
-function toggleProject(id){
-  const el=document.getElementById(id+'-groups');
-  const caret=document.getElementById(id+'-caret');
-  const open = el.style.display==='block';
-  el.style.display = open ? 'none' : 'block';
-  caret.style.transform = open ? 'rotate(0deg)' : 'rotate(90deg)';
+const TOTAL = 35;
+const rgba = (hex,a)=>{const h=hex.replace('#','');return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`};
+const T = { accent:'#f06a6a', today:'#f0563f' };
+
+const WEEKS = [
+  {w:'6월 1주',r:'6/1–6/7'},{w:'6월 2주',r:'6/8–6/14'},{w:'6월 3주',r:'6/15–6/21'},
+  {w:'6월 4주',r:'6/22–6/28'},{w:'6월 5주',r:'6/29–7/5'}
+];
+document.getElementById('weekHead').innerHTML = WEEKS.map(c=>`
+  <div class="flex-1 px-3 py-2 border-l border-[#ececef]">
+    <div class="mono text-[11.5px] font-semibold text-[#52525b] leading-tight">${c.w}</div>
+    <div class="mono text-[10px] text-[#b4b4bc] mt-0.5">${c.r}</div>
+  </div>`).join('');
+
+const PEOPLE = {
+  sy:{name:'이서연',role:'브랜드 디자인 리드',init:'서연',color:'#f06a6a'},
+  jh:{name:'박준호',role:'모바일 개발 리드',init:'준호',color:'#4573d2'},
+  mj:{name:'최민지',role:'시스템 분석가',init:'민지',color:'#1fa971'},
+  syun:{name:'한서윤',role:'UX 디자이너',init:'서윤',color:'#ec4899'},
+  ms:{name:'조민석',role:'프론트엔드 개발자',init:'민석',color:'#0891b2'},
+  jaeho:{name:'윤재호',role:'백엔드 개발자',init:'재호',color:'#7c3aed'},
+  ext:{name:'최서연',role:'퍼블리셔 · 외부(프리랜서)',init:'서연',color:'#e0a93a',external:true},
+  me:{name:'김지훈',role:'프로덕트 매니저 (나)',init:'지훈',color:'#f06a6a'},
+};
+
+// 프로젝트: type = 'team'(팀 프로젝트) | 'stage'(단계 프로젝트)
+const DATA = [
+  { name:'브랜드 리뉴얼', type:'team', owner:'이서연', init:'이', progress:68, color:'#f06a6a', groups:[
+    { n:'디자인팀', s:0, e:17, status:'done', due:'6/18', team:['sy','syun','me'] },
+    { n:'마케팅팀', s:14, e:26, status:'active', due:'6/27', team:['sy','me'] },
+    { n:'검수 TF', s:25, e:32, status:'plan', due:'7/3', team:['sy','me'] },
+  ]},
+  { name:'모바일 앱 v2.0', type:'team', owner:'박준호', init:'박', progress:45, color:'#4573d2', groups:[
+    { n:'디자인팀', s:0, e:12, status:'done', due:'6/13', team:['jh','syun'] },
+    { n:'개발팀', s:10, e:31, status:'active', due:'7/2', team:['jh','ms','jaeho','ext'] },
+    { n:'QA팀', s:28, e:34, status:'plan', due:'7/5', team:['jh','mj'] },
+  ]},
+  { name:'ERP 시스템 구축', type:'stage', owner:'최민지', init:'최', progress:30, color:'#1fa971', groups:[
+    { n:'1. 현황 분석', s:1, e:11, status:'done', due:'6/12', team:['mj','me'] },
+    { n:'2. 데이터 이관', s:12, e:25, status:'active', due:'6/26', dueToday:true, team:['mj','jaeho'] },
+    { n:'3. 모듈 커스터마이징', s:21, e:34, status:'active', due:'7/5', team:['mj','jaeho','ms'] },
+  ]},
+  { name:'신규 물류센터 오픈', type:'stage', owner:'김지훈', init:'김', progress:20, color:'#9b6fd0', groups:[
+    { n:'1. 부지 계약', s:2, e:13, status:'done', due:'6/14', team:['me','mj'] },
+    { n:'2. 설비 발주', s:14, e:30, status:'active', due:'7/1', team:['me','jaeho'] },
+    { n:'3. 인력 채용', s:21, e:34, status:'plan', due:'7/5', team:['me','ext'] },
+  ]},
+];
+
+const STATUS = {
+  done:{label:'완료',c:'#86868f',bg:'#f0f0f2'},
+  active:{label:'진행 중',c:T.accent,bg:rgba(T.accent,0.13)},
+  plan:{label:'예정',c:'#86868f',bg:'#f4f2f0'},
+};
+
+const open_ = {}; // 확장 상태
+
+function barStyle(g,color){
+  const left=g.s/TOTAL*100, width=(g.e-g.s+1)/TOTAL*100;
+  let st;
+  if(g.status==='done') st=`background:${rgba(color,0.16)};color:${rgba(color,0.92)}`;
+  else if(g.status==='active') st=`background:${color};color:#fff;box-shadow:${g.dueToday?`0 0 0 2px ${rgba(T.today,0.55)},`:''}0 1px 3px ${rgba(color,0.35)}`;
+  else st=`background:${rgba(color,0.07)};color:${rgba(color,0.82)};border:1px dashed ${rgba(color,0.45)}`;
+  return `position:absolute;top:6px;height:20px;left:calc(${left}% + 3px);width:calc(${width}% - 6px);border-radius:5px;display:flex;align-items:center;gap:5px;padding:0 8px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;${st}`;
 }
-function openPanel(name){
-  document.getElementById('sidePanel').style.display='block';
-  document.getElementById('panelTitle').textContent = name + ' 워크플로우';
-  switchTab('flow');
-}
-function closePanel(){
-  document.getElementById('sidePanel').style.display='none';
-}
-function switchTab(tab){
-  ['flow','members','log'].forEach(function(t){
-    document.getElementById('tab-'+t).style.display = (t===tab) ? 'flex' : 'none';
+
+function render(){
+  const L=[], R=[];
+  DATA.forEach((p,pi)=>{
+    const c=p.color, isOpen=!!open_[pi];
+    const typeBadge = p.type==='team'
+      ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4]">팀</span>`
+      : `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#eefaf3] text-[#177a54]">단계</span>`;
+    L.push(`
+      <div onclick="toggle(${pi})" class="h-[46px] flex items-center gap-2 px-3.5 border-b border-[#f0f0f3] bg-[#fcfcfd] cursor-pointer hover:bg-[#faf8f6]">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9aa3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .15s;transform:rotate(${isOpen?90:0}deg)"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="w-2.5 h-2.5 rounded-[3px] shrink-0" style="background:${c}"></span>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="text-[12.5px] font-bold truncate">${p.name}</span>${typeBadge}
+          </div>
+          <div class="text-[10.5px] text-[#9a9aa3] font-medium mt-0.5">${p.owner} · ${p.groups.length}개 ${p.type==='team'?'팀':'단계'}</div>
+        </div>
+        <span class="mono text-[11.5px] font-semibold" style="color:${c}">${p.progress}%</span>
+      </div>`);
+    const ss=Math.min(...p.groups.map(g=>g.s)), se=Math.max(...p.groups.map(g=>g.e));
+    R.push(`
+      <div class="h-[46px] relative border-b border-[#f0f0f3] cursor-pointer" onclick="toggle(${pi})">
+        <div style="position:absolute;top:18px;height:9px;left:calc(${ss/TOTAL*100}% + 3px);width:calc(${(se-ss+1)/TOTAL*100}% - 6px);border-radius:4px;background:${rgba(c,0.12)}"></div>
+      </div>`);
+    if(isOpen) p.groups.forEach((g,gi)=>{
+      L.push(`
+        <div onclick="openDrawer(${pi},${gi})" class="h-[32px] flex items-center gap-2 pl-9 pr-3.5 border-b border-[#f6f6f8] cursor-pointer hover:bg-[#faf8f6]">
+          <span class="w-[7px] h-[7px] rounded-[2px] shrink-0" style="${g.status==='plan'?`border:1.5px dashed ${rgba(c,0.5)}`:`background:${rgba(c,g.status==='done'?0.45:1)}`}"></span>
+          <span class="flex-1 min-w-0 text-[11.5px] text-[#5b5b64] font-medium truncate">${g.n}</span>
+          <span class="mono text-[10.5px] font-semibold shrink-0" style="color:${g.dueToday?T.today:'#a8a8b0'}">${g.due}</span>
+        </div>`);
+      R.push(`
+        <div class="h-[32px] relative border-b border-[#f6f6f8] cursor-pointer hover:bg-[rgba(0,0,0,0.015)]" onclick="openDrawer(${pi},${gi})">
+          <div style="${barStyle(g,c)}">${g.status==='done'?'<span style="font-size:9px;font-weight:800">✓</span>':''}<span class="truncate">${g.n}</span></div>
+        </div>`);
+    });
   });
-  document.querySelectorAll('.tab-btn').forEach(function(b){
-    if(b.dataset.tab===tab){ b.style.color='#185FA5'; b.style.borderBottom='2px solid #185FA5'; }
-    else { b.style.color='#5f5e5a'; b.style.borderBottom='2px solid transparent'; }
-  });
+  document.getElementById('leftCol').innerHTML=L.join('');
+  const today=document.getElementById('rightCol').firstElementChild.outerHTML;
+  document.getElementById('rightCol').innerHTML=today+R.join('');
 }
+function toggle(pi){ open_[pi]=!open_[pi]; render(); }
+
+// Drawer
+const MSGS=(g)=>[
+  {who:g.team[0],text:`${g.n} 1차 작업 공유합니다. <span class="text-[#d94f4f] font-bold">@김지훈</span> 확인 부탁드려요.`,time:'어제 오후 2:40',file:{ext:'FIG',name:'시안_v2.fig',size:'14.2 MB',c:'#a259ff'}},
+  {who:'me',text:'확인했습니다. 방향성 좋네요, 일정만 한 번 더 체크해요.',time:'어제 오후 4:12'},
+  {who:g.team[1]||g.team[0],text:'넵, 수정본 내일 오전까지 올리겠습니다 👍',time:'오늘 오전 10:15',confirmed:true},
+];
+function openDrawer(pi,gi){
+  const p=DATA[pi], g=p.groups[gi], c=p.color, st=STATUS[g.status];
+  document.getElementById('dTag').textContent=st.label;
+  document.getElementById('dTag').style.cssText=`color:${st.c};background:${st.bg}`;
+  document.getElementById('dTitle').textContent=g.n+' 워크플로우';
+  document.getElementById('dDot').style.background=c;
+  document.getElementById('dProj').textContent=`${p.name} · ${p.type==='team'?'팀 프로젝트':'단계 프로젝트'}`;
+
+  document.getElementById('tab-flow').innerHTML=MSGS(g).map(m=>{
+    const person=m.who==='me'?PEOPLE.me:PEOPLE[m.who], mine=m.who==='me';
+    return `
+    <div class="flex gap-2.5 ${mine?'justify-end':''}">
+      ${mine?'':`<div class="w-8 h-8 rounded-[9px] shrink-0 flex items-center justify-center text-[10px] font-bold" style="background:${rgba(person.color,0.16)};color:${person.color}">${person.init}</div>`}
+      <div class="max-w-[270px] min-w-0">
+        <div class="text-[10.5px] text-[#9a9aa3] font-semibold mb-1 ${mine?'text-right':''}">${mine?'나':person.name} · ${m.time}</div>
+        <div class="text-[12.5px] leading-relaxed font-medium text-[#2d2d33] px-3 py-2 ${mine?'bg-[#fdeeee] rounded-[12px_4px_12px_12px]':'bg-[#f4f2f0] rounded-[4px_12px_12px_12px]'}">${m.text}</div>
+        ${m.file?`
+        <div class="flex items-center gap-2.5 mt-1.5 bg-white border border-[#ececef] rounded-[9px] px-2.5 py-2">
+          <div class="w-[34px] h-[34px] rounded-lg shrink-0 flex items-center justify-center text-[9px] font-extrabold" style="background:${rgba(m.file.c,0.14)};color:${m.file.c}">${m.file.ext}</div>
+          <div class="min-w-0"><div class="text-[11.5px] font-semibold text-[#3d3d45] truncate">${m.file.name}</div><div class="mono text-[10px] text-[#a3a3ad]">${m.file.size}</div></div>
+        </div>`:''}
+        ${m.confirmed?'<div class="text-[10.5px] text-[#1fa971] font-bold mt-1">✓ 확인됨</div>':''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tab-members').innerHTML=g.team.map((k,i)=>{
+    const m=PEOPLE[k];
+    return `
+    <div class="flex items-center gap-3 px-2 py-2 rounded-[9px] hover:bg-[#faf8f6]">
+      <div class="w-[34px] h-[34px] rounded-[10px] shrink-0 flex items-center justify-center text-[11px] font-bold" style="background:${rgba(m.color,0.16)};color:${m.color}">${m.init}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[12.5px] font-bold">${m.name}</div>
+        <div class="text-[11px] text-[#9a9aa3] font-medium">${m.role}</div>
+      </div>
+      ${i===0?`<span class="text-[9.5px] font-bold text-[#d94f4f] bg-[#fdeeee] px-2 py-1 rounded-[5px]">담당</span>`:''}
+      ${m.external?`<span class="text-[9.5px] font-bold text-[#8a6116] bg-[#faf0da] px-2 py-1 rounded-[5px]">외부</span>`:''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('tab-log').innerHTML=[
+    ['오늘 10:15','수정본 일정이 합의됨'],
+    ['어제 16:40','박지현이 업무를 완료 처리함'],
+    ['어제 14:40','이서연이 파일을 첨부함 (시안_v2.fig)'],
+    ['6/24 18:02','마감일이 3일 연장됨 (딜레이 사유: 외부 피드백 지연)'],
+  ].map(([t,x])=>`<div class="flex gap-3 text-[12px] font-medium text-[#3d3d45]"><span class="mono text-[10.5px] text-[#a3a3ad] w-[72px] shrink-0 pt-0.5">${t}</span>${x}</div>`).join('');
+
+  dTab('flow');
+  document.getElementById('backdrop').classList.remove('opacity-0','pointer-events-none');
+  document.getElementById('drawer').classList.remove('translate-x-[108%]');
+}
+function closeDrawer(){
+  document.getElementById('backdrop').classList.add('opacity-0','pointer-events-none');
+  document.getElementById('drawer').classList.add('translate-x-[108%]');
+}
+function dTab(t){
+  ['flow','members','log'].forEach(x=>{
+    const el=document.getElementById('tab-'+x);
+    el.classList.toggle('hidden',x!==t);
+    el.classList.toggle('flex',x===t);
+  });
+  document.querySelectorAll('#dTabs button').forEach(b=>{
+    const on=b.dataset.tab===t;
+    b.className=`flex-1 pb-2.5 text-[12px] border-b-2 ${on?'font-bold border-[#f06a6a] text-[#d94f4f]':'font-semibold border-transparent text-[#86868f]'}`;
+  });
+  document.getElementById('flowInput').style.display = t==='flow'?'flex':'none';
+}
+open_[0]=true; open_[2]=true;
+render();
 </script>
 </body>
 </html>

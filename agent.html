@@ -3,108 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent 관리 - WBS 목업</title>
-<link rel="stylesheet" href="_shared.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<title>Agent 관리 · WBS</title>
+<script src="head.js"></script>
 </head>
-<body>
-<div class="page">
-  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">Agent 관리</span></div>
-
-  <div style="display:flex; gap:6px; margin-bottom:16px; border-bottom:1px solid #d3d1c7;">
-    <div class="atab active" onclick="aswitch('list')" data-atab="list" style="padding:8px 4px; font-size:13px; cursor:pointer; border-bottom:2px solid #185FA5; color:#185FA5;">Agent 목록</div>
-    <div class="atab" onclick="aswitch('manual')" data-atab="manual" style="padding:8px 4px; margin-left:16px; font-size:13px; cursor:pointer; color:#5f5e5a;">매뉴얼·프롬프트</div>
-    <div class="atab" onclick="aswitch('log')" data-atab="log" style="padding:8px 4px; margin-left:16px; font-size:13px; cursor:pointer; color:#5f5e5a;">활동 로그</div>
+<body data-page="agent">
+<div id="content">
+  <div class="px-6 pt-5 pb-4 flex items-baseline gap-2.5">
+    <h1 class="text-[16px] font-bold tracking-tight">Agent 관리</h1>
+    <span class="text-[12px] text-[#a3a3ad] font-medium">시스템 관리자 전용 · 상태, 매뉴얼 학습, 활동 로그</span>
   </div>
 
-  <div id="a-list">
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="width:8px; height:8px; border-radius:50%; background:#639922; display:inline-block;"></span>
-          <span style="font-size:14px; font-weight:500;">hermes-agent-01</span>
-          <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">Cloud (Railway)</span>
+  <div class="flex gap-1 px-6 border-b border-[#ececef]">
+    <button data-t="list" onclick="tab('list')" class="atab px-3 pb-2.5 text-[12.5px] font-bold border-b-2 border-[#f06a6a] text-[#d94f4f]">Agent 목록</button>
+    <button data-t="manual" onclick="tab('manual')" class="atab px-3 pb-2.5 text-[12.5px] font-semibold border-b-2 border-transparent text-[#86868f]">매뉴얼 · 프롬프트</button>
+    <button data-t="log" onclick="tab('log')" class="atab px-3 pb-2.5 text-[12.5px] font-semibold border-b-2 border-transparent text-[#86868f]">활동 로그</button>
+  </div>
+
+  <!-- 목록 -->
+  <div id="t-list" class="px-6 py-5 flex flex-col gap-3">
+    <div class="bg-white border border-[#ececef] rounded-[13px] p-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-[#1fa971]"></span>
+          <span class="text-[14px] font-bold tracking-tight">hermes-agent-01</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-md" style="background:rgba(69,115,210,.12);color:#2f6bc4">Cloud · Railway</span>
+          <span class="mono text-[10.5px] text-[#a3a3ad] font-medium">가동 14일 6시간</span>
         </div>
-        <div style="display:flex; gap:6px;">
-          <button style="padding:4px 10px;"><i class="ti ti-player-pause"></i> 정지</button>
-          <button style="padding:4px 10px;"><i class="ti ti-refresh"></i> 재시작</button>
-        </div>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
-        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
-          <div class="tiny muted">CPU</div><div style="font-size:13px; font-weight:500; margin-top:2px;">38%</div>
-          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:38%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
-        </div>
-        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
-          <div class="tiny muted">RAM</div><div style="font-size:13px; font-weight:500; margin-top:2px;">4.1 / 8GB</div>
-          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:51%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
-        </div>
-        <div style="background:#f1efe8; border-radius:8px; padding:8px 10px;">
-          <div class="tiny muted">저장장치</div><div style="font-size:13px; font-weight:500; margin-top:2px;">22 / 100GB</div>
-          <div style="height:4px; background:#d3d1c7; border-radius:2px; margin-top:4px;"><div style="width:22%; height:4px; background:#378ADD; border-radius:2px;"></div></div>
+        <div class="flex gap-1.5">
+          <button class="text-[11.5px] font-semibold px-3 py-1.5 rounded-lg border border-[#ececef] hover:bg-[#f4f2f0]">정지</button>
+          <button class="text-[11.5px] font-semibold px-3 py-1.5 rounded-lg border border-[#ececef] hover:bg-[#f4f2f0]">재시작</button>
         </div>
       </div>
-      <div class="tiny" style="margin-top:10px; color:#5f5e5a;"><i class="ti ti-loader-2"></i> 수행 중: Drive 폴더 정리 (신제품 런칭)</div>
-      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
-        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">회의록 요약</span>
-        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">파일 정리</span>
-        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">Notion 연동</span>
-        <span style="font-size:11px; padding:3px 8px; background:#f1efe8; border-radius:4px;">매뉴얼 응답</span>
+      <div class="grid grid-cols-4 gap-3 mt-4">
+        <div class="bg-[#faf8f6] rounded-[10px] px-3.5 py-3">
+          <div class="text-[10.5px] font-semibold text-[#86868f]">CPU</div>
+          <div class="mono text-[16px] font-semibold mt-1">38<span class="text-[11px] text-[#b4b4bc]">%</span></div>
+          <div class="h-1 bg-[#e7e7ec] rounded-full mt-2"><div class="h-1 rounded-full bg-[#4573d2]" style="width:38%"></div></div>
+        </div>
+        <div class="bg-[#faf8f6] rounded-[10px] px-3.5 py-3">
+          <div class="text-[10.5px] font-semibold text-[#86868f]">RAM</div>
+          <div class="mono text-[16px] font-semibold mt-1">4.1<span class="text-[11px] text-[#b4b4bc]">/8GB</span></div>
+          <div class="h-1 bg-[#e7e7ec] rounded-full mt-2"><div class="h-1 rounded-full bg-[#4573d2]" style="width:51%"></div></div>
+        </div>
+        <div class="bg-[#faf8f6] rounded-[10px] px-3.5 py-3">
+          <div class="text-[10.5px] font-semibold text-[#86868f]">저장장치</div>
+          <div class="mono text-[16px] font-semibold mt-1">22<span class="text-[11px] text-[#b4b4bc]">/100GB</span></div>
+          <div class="h-1 bg-[#e7e7ec] rounded-full mt-2"><div class="h-1 rounded-full bg-[#4573d2]" style="width:22%"></div></div>
+        </div>
+        <div class="bg-[#faf8f6] rounded-[10px] px-3.5 py-3">
+          <div class="text-[10.5px] font-semibold text-[#86868f]">토큰 사용 (이번 달)</div>
+          <div class="mono text-[16px] font-semibold mt-1">2.4<span class="text-[11px] text-[#b4b4bc]">M</span></div>
+          <div class="text-[10px] text-[#a3a3ad] font-medium mt-2">외부 AI API 호출 기준</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 mt-4 text-[11.5px] font-semibold text-[#3d3d45]">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#f06a6a] animate-pulse"></span>
+        수행 중 — Drive 폴더 정리 <span class="text-[#a3a3ad] font-medium">(신규 물류센터 오픈)</span>
+      </div>
+      <div class="flex gap-1.5 mt-3 flex-wrap">
+        <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">회의록 요약</span>
+        <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">파일 정리</span>
+        <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">Notion 연동</span>
+        <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">매뉴얼 응답</span>
+        <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[#f4f2f0] text-[#5b5b64]">주간 리포트</span>
       </div>
     </div>
 
-    <div class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="width:8px; height:8px; border-radius:50%; background:#888780; display:inline-block;"></span>
-          <span style="font-size:14px; font-weight:500;">hermes-agent-02</span>
-          <span style="font-size:11px; padding:2px 8px; background:#f1efe8; color:#5f5e5a; border-radius:4px;">PC (Mini PC)</span>
-          <span class="tiny muted">오프라인</span>
+    <div class="bg-white border border-[#ececef] rounded-[13px] p-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-[#c9c9d2]"></span>
+          <span class="text-[14px] font-bold tracking-tight text-[#86868f]">hermes-agent-02</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#f4f2f0] text-[#86868f]">PC · Mini PC</span>
+          <span class="text-[10.5px] text-[#a3a3ad] font-medium">오프라인 · 2시간 전 연결 끊김</span>
         </div>
-        <button style="padding:4px 10px;"><i class="ti ti-player-play"></i> 시작</button>
+        <button class="text-[11.5px] font-bold px-3.5 py-1.5 rounded-lg bg-[#18181b] text-white hover:bg-[#2d2d33]">시작</button>
       </div>
-      <div class="tiny muted" style="margin-top:8px;">WBS 기본 기능은 정상 동작 중 — AI 기능만 비활성화됨</div>
+      <div class="mt-3 text-[11.5px] font-medium text-[#86868f] bg-[#faf8f6] rounded-lg px-3 py-2.5">
+        WBS 기본 기능은 정상 동작 중입니다 — 이 Agent의 AI 기능만 비활성화되었습니다.
+      </div>
     </div>
   </div>
 
-  <div id="a-manual" style="display:none;">
-    <div style="margin-bottom:16px;">
-      <div style="font-size:13px; font-weight:500; margin-bottom:8px;">회사 매뉴얼</div>
-      <div style="display:flex; align-items:center; justify-content:space-between; border:1px solid #d3d1c7; border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:6px;">
-        <span><i class="ti ti-file-text"></i> 사규_2026.pdf</span><span style="color:#3B6D11;">학습 완료</span>
+  <!-- 매뉴얼/프롬프트 -->
+  <div id="t-manual" class="hidden px-6 py-5">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white border border-[#ececef] rounded-[13px] p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-[13px] font-bold tracking-tight">회사 매뉴얼</div>
+          <button class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-[#ececef] hover:bg-[#f4f2f0]">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            파일 등록
+          </button>
+        </div>
+        <div class="text-[11px] text-[#a3a3ad] font-medium mb-3">등록하면 Agent가 학습해 사원 질문에 근거로 응답합니다</div>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-3 border border-[#ececef] rounded-[10px] px-3 py-2.5">
+            <div class="w-[34px] h-[34px] rounded-lg shrink-0 flex items-center justify-center text-[9px] font-extrabold" style="background:rgba(224,86,63,.14);color:#e0563f">PDF</div>
+            <div class="flex-1 min-w-0"><div class="text-[12px] font-semibold truncate">사규_2026.pdf</div><div class="mono text-[10px] text-[#a3a3ad]">3.1 MB · 6/20 등록</div></div>
+            <span class="text-[10px] font-bold text-[#177a54] bg-[#eefaf3] px-2 py-1 rounded-md">학습 완료</span>
+          </div>
+          <div class="flex items-center gap-3 border border-[#ececef] rounded-[10px] px-3 py-2.5">
+            <div class="w-[34px] h-[34px] rounded-lg shrink-0 flex items-center justify-center text-[9px] font-extrabold" style="background:rgba(69,115,210,.14);color:#4573d2">DOC</div>
+            <div class="flex-1 min-w-0"><div class="text-[12px] font-semibold truncate">휴가규정.docx</div><div class="mono text-[10px] text-[#a3a3ad]">240 KB · 오늘 등록</div></div>
+            <span class="text-[10px] font-bold text-[#8a6116] bg-[#faf0da] px-2 py-1 rounded-md">학습 중</span>
+          </div>
+          <div class="flex items-center gap-3 border border-[#ececef] rounded-[10px] px-3 py-2.5">
+            <div class="w-[34px] h-[34px] rounded-lg shrink-0 flex items-center justify-center text-[9px] font-extrabold" style="background:rgba(224,86,63,.14);color:#e0563f">PDF</div>
+            <div class="flex-1 min-w-0"><div class="text-[12px] font-semibold truncate">정관_개정판.pdf</div><div class="mono text-[10px] text-[#a3a3ad]">1.8 MB · 6/12 등록</div></div>
+            <span class="text-[10px] font-bold text-[#177a54] bg-[#eefaf3] px-2 py-1 rounded-md">학습 완료</span>
+          </div>
+        </div>
       </div>
-      <div style="display:flex; align-items:center; justify-content:space-between; border:1px solid #d3d1c7; border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:8px;">
-        <span><i class="ti ti-file-text"></i> 휴가규정.docx</span><span style="color:#854F0B;">학습 중</span>
-      </div>
-      <button style="padding:6px 12px;"><i class="ti ti-upload"></i> 매뉴얼 파일 등록</button>
-    </div>
-    <div>
-      <div style="font-size:13px; font-weight:500; margin-bottom:8px;">추가 프롬프트</div>
-      <textarea rows="3" placeholder="Agent에게 추가로 지시하고 싶은 내용을 입력하세요" style="width:100%;"></textarea>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-        <span class="tiny muted">이전 프롬프트 3건 · 되돌리기 가능</span>
-        <button style="padding:6px 12px;">적용</button>
+      <div class="bg-white border border-[#ececef] rounded-[13px] p-5">
+        <div class="text-[13px] font-bold tracking-tight mb-1">추가 프롬프트</div>
+        <div class="text-[11px] text-[#a3a3ad] font-medium mb-3">Agent 기본 역할(회사 총매니저·비서) 위에 덧붙는 지시</div>
+        <textarea rows="5" class="w-full text-[12px] font-medium border border-[#ececef] rounded-[10px] px-3 py-2.5 focus:outline-none focus:border-[#f06a6a] resize-none placeholder-[#b4b4bc]" placeholder="예) 답변은 항상 존댓말로, 사내 용어집 기준으로 응답하세요.">답변은 존댓말로 하고, 금액 관련 질문에는 회계팀 확인을 권고할 것.</textarea>
+        <div class="flex items-center justify-between mt-3">
+          <button class="text-[11px] font-semibold text-[#86868f] hover:text-[#3d3d45] flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 102.1-9.4L1 10"/></svg>
+            이전 프롬프트 3건 · 되돌리기
+          </button>
+          <button class="text-[11.5px] font-bold px-4 py-2 rounded-lg bg-[#18181b] text-white hover:bg-[#2d2d33]">적용</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div id="a-log" style="display:none; flex-direction:column; gap:8px;">
-    <div style="font-size:12px; display:flex; gap:8px;"><span class="muted" style="width:80px;">10:41</span><span>hermes-agent-01 — Drive 폴더 정리 완료 (신제품 런칭)</span></div>
-    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span class="muted" style="width:80px;">10:12</span><span>hermes-agent-01 — 매뉴얼 학습 갱신 (사규_2026.pdf)</span></div>
-    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span class="muted" style="width:80px;">09:50</span><span>hermes-agent-01 — 주간 진척 리포트 Slack 발송</span></div>
-    <div style="font-size:12px; display:flex; gap:8px; margin-top:6px;"><span style="width:80px; color:#A32D2D;">09:30</span><span>hermes-agent-02 — 작업 실패: Notion 동기화 (재시도 예약)</span></div>
+  <!-- 활동 로그 -->
+  <div id="t-log" class="hidden px-6 py-5">
+    <div class="bg-white border border-[#ececef] rounded-[13px] overflow-hidden">
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-[#ececef] bg-[#faf8f6]">
+        <span class="text-[11px] font-bold text-[#86868f]">자동화 활동 전체</span>
+        <span class="text-[10.5px] text-[#b4b4bc] font-medium">대화 로그와 별개 · 삭제 불가</span>
+      </div>
+      <div id="logRows"></div>
+    </div>
   </div>
 </div>
+
+<script src="shared.js"></script>
 <script>
-function aswitch(tab){
-  document.getElementById('a-list').style.display = tab==='list' ? 'block' : 'none';
-  document.getElementById('a-manual').style.display = tab==='manual' ? 'block' : 'none';
-  document.getElementById('a-log').style.display = tab==='log' ? 'flex' : 'none';
-  document.querySelectorAll('.atab').forEach(function(b){
-    if(b.dataset.atab===tab){ b.style.color='#185FA5'; b.style.borderBottom='2px solid #185FA5'; }
-    else { b.style.color='#5f5e5a'; b.style.borderBottom='2px solid transparent'; }
+function tab(t){
+  ['list','manual','log'].forEach(x=>document.getElementById('t-'+x).classList.toggle('hidden',x!==t));
+  document.querySelectorAll('.atab').forEach(b=>{
+    const on=b.dataset.t===t;
+    b.className=`atab px-3 pb-2.5 text-[12.5px] border-b-2 ${on?'font-bold border-[#f06a6a] text-[#d94f4f]':'font-semibold border-transparent text-[#86868f]'}`;
   });
 }
+const LOGS=[
+  ['오늘 10:41','hermes-agent-01','파일 정리','Drive 폴더 정리 완료 — 신규 물류센터 오픈 (4개 파일 이동)','ok'],
+  ['오늘 10:12','hermes-agent-01','매뉴얼 학습','휴가규정.docx 색인 갱신 시작','ok'],
+  ['오늘 09:50','hermes-agent-01','리포트','주간 진척 리포트 생성 · Slack 발송 (수신 6명)','ok'],
+  ['오늘 09:30','hermes-agent-02','작업 실패','Notion 동기화 실패 — 연결 끊김 (재시도 예약됨)','fail'],
+  ['어제 23:00','hermes-agent-01','야간 점검','Drive 전체 정리 점검 — 이동 2건, 미분류 1건','ok'],
+  ['어제 18:22','hermes-agent-01','알림 발송','멘션 확인 요청 Slack 전달 (김지훈 → 이서연)','ok'],
+];
+document.getElementById('logRows').innerHTML=LOGS.map(([t,a,k,x,s])=>`
+  <div class="flex items-center gap-3 px-4 py-3 border-b border-[#f6f6f8] last:border-0 hover:bg-[#fcfcfd]">
+    <span class="mono text-[10.5px] text-[#a3a3ad] w-[76px] shrink-0">${t}</span>
+    <span class="mono text-[10.5px] font-semibold text-[#5b5b64] w-[128px] shrink-0">${a}</span>
+    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 ${s==='fail'?'bg-[#fcebeb] text-[#a32d2d]':'bg-[#f4f2f0] text-[#5b5b64]'}">${k}</span>
+    <span class="text-[12px] font-medium text-[#3d3d45] truncate">${x}</span>
+  </div>`).join('');
 </script>
 </body>
 </html>

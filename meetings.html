@@ -3,71 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>회의록 - WBS 목업</title>
-<link rel="stylesheet" href="_shared.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<title>회의록 · WBS</title>
+<script src="head.js"></script>
 </head>
-<body>
-<div class="page">
-  <div class="topbar"><a href="index.html">&larr; 목업 목록</a><span class="tiny muted">회의록</span></div>
-
-  <div style="display:flex; gap:8px; margin-bottom:8px;">
-    <input id="meetSearch" oninput="filterMeetings()" placeholder="회의 제목이나 내용으로 검색" style="flex:1;">
-    <button><i class="ti ti-plus"></i> 회의록 등록</button>
+<body data-page="meetings">
+<div id="content">
+  <div class="px-6 pt-5 pb-4 flex items-center justify-between">
+    <div class="flex items-baseline gap-2.5">
+      <h1 class="text-[16px] font-bold tracking-tight">회의록</h1>
+      <span class="text-[12px] text-[#a3a3ad] font-medium">내가 참석한 회의만 표시됩니다</span>
+    </div>
+    <button class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      회의록 등록
+    </button>
   </div>
-  <p class="tiny muted" style="margin:0 0 16px;"><i class="ti ti-lock"></i> 내가 참석한 회의만 표시됩니다</p>
 
-  <div id="meetList" style="display:flex; flex-direction:column; gap:10px;">
-    <div class="meet-item card" data-text="주간 정기회의 홈페이지 리뉴얼 진행상황 공유">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:14px; font-weight:500;">주간 정기회의</span>
-        <span class="tiny muted">2026-07-01 10:00</span>
-      </div>
-      <div class="tiny muted" style="margin-top:4px;">홈페이지 리뉴얼 진행상황 공유. 디자인 시안 1차 검토 완료, 개발 착수 일정 확정.</div>
-      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
-        <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">홈페이지 리뉴얼</span>
-        <span class="tiny muted">참석자 4명</span>
-        <span class="tiny muted" style="margin-left:auto;"><i class="ti ti-microphone"></i> 외부 서비스로 정리됨</span>
-      </div>
-    </div>
-
-    <div class="meet-item card" data-text="단가 협의 신제품 런칭 외주 단가 조율">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:14px; font-weight:500;">외주 단가 협의</span>
-        <span class="tiny muted">2026-06-28 14:30</span>
-      </div>
-      <div class="tiny muted" style="margin-top:4px;">신제품 런칭 관련 외주 업체와 단가 조율. 최종 단가 합의 및 계약 조건 확정.</div>
-      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
-        <span style="font-size:11px; padding:2px 8px; background:#E6F1FB; color:#0C447C; border-radius:4px;">신제품 런칭</span>
-        <span class="tiny muted">참석자 3명</span>
-      </div>
-    </div>
-
-    <div class="meet-item card" data-text="전사 공유회 분기 실적 및 계획 공유">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:14px; font-weight:500;">전사 분기 공유회</span>
-        <span class="tiny muted">2026-06-20 09:00</span>
-      </div>
-      <div class="tiny muted" style="margin-top:4px;">분기 실적 및 다음 분기 계획 공유.</div>
-      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
-        <span style="font-size:11px; padding:2px 8px; background:#f1efe8; color:#5f5e5a; border-radius:4px;">프로젝트 미연결</span>
-        <span class="tiny muted">참석자 28명 · 같은 지점 전체 열람 가능</span>
-      </div>
+  <div class="px-6 pb-4">
+    <div class="flex items-center gap-2.5 bg-white border border-[#ececef] rounded-xl px-4 py-3">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#86868f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input id="q" oninput="filter()" placeholder="회의 제목이나 내용으로 검색 — 예: 단가" class="flex-1 text-[13px] font-medium focus:outline-none placeholder-[#b4b4bc]">
+      <span class="text-[10.5px] text-[#b4b4bc] font-medium">AI 비서에게 "단가 얘기 나온 회의 찾아줘"라고 물어볼 수도 있어요</span>
     </div>
   </div>
 
-  <div id="meetEmpty" style="display:none; text-align:center; padding:32px 0; color:#888780; font-size:13px;">검색 결과가 없습니다.</div>
+  <div id="list" class="px-6 pb-8 flex flex-col gap-2.5"></div>
+  <div id="empty" class="hidden px-6 pb-8 text-center text-[13px] text-[#a3a3ad] font-medium py-10">검색 결과가 없습니다.</div>
 </div>
+
+<script src="shared.js"></script>
 <script>
-function filterMeetings(){
-  const q = document.getElementById('meetSearch').value.trim().toLowerCase();
-  let shown = 0;
-  document.querySelectorAll('.meet-item').forEach(function(el){
-    const match = el.dataset.text.toLowerCase().includes(q);
-    el.style.display = match ? 'block' : 'none';
-    if(match) shown++;
+const MEETS=[
+  { title:'주간 정기회의', dt:'2026-07-01 10:00', proj:'브랜드 리뉴얼', projColor:'#f06a6a',
+    desc:'홈페이지 리뉴얼 진행상황 공유. 디자인 시안 1차 검토 완료, 개발 착수 일정 확정.',
+    people:['서연','준호','지훈','+1'], stt:true,
+    decisions:['시안 2안으로 확정','개발 착수 7/3'] },
+  { title:'외주 단가 협의', dt:'2026-06-28 14:30', proj:'ERP 시스템 구축', projColor:'#1fa971',
+    desc:'외주 업체와 단가 조율. 최종 단가 합의 및 계약 조건 확정.',
+    people:['민지','지훈','재호'], stt:false,
+    decisions:['단가 5% 조정 합의','계약서 7/2까지 회신'] },
+  { title:'전사 분기 공유회', dt:'2026-06-20 09:00', proj:null, projColor:null,
+    desc:'분기 실적 및 다음 분기 계획 공유.',
+    people:['전사','28명'], stt:true,
+    decisions:['3분기 목표 확정'] },
+];
+function card(m){
+  return `
+  <div class="meet bg-white border border-[#ececef] rounded-[13px] px-5 py-4 hover:border-[#dcdce2] cursor-pointer" data-text="${(m.title+' '+m.desc).toLowerCase()}">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="text-[14px] font-bold tracking-tight">${m.title}</span>
+        ${m.proj
+          ? `<span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md" style="background:${m.projColor}1f;color:${m.projColor}"><span class="w-1.5 h-1.5 rounded-[2px]" style="background:${m.projColor}"></span>${m.proj}</span>`
+          : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#f4f2f0] text-[#86868f]">프로젝트 미연결 · 지점 전체 열람</span>`}
+      </div>
+      <span class="mono text-[11px] text-[#a3a3ad] font-medium">${m.dt}</span>
+    </div>
+    <div class="text-[12px] text-[#5b5b64] font-medium mt-1.5 leading-relaxed">${m.desc}</div>
+    <div class="flex items-center gap-3 mt-3">
+      <div class="flex -space-x-1.5">
+        ${m.people.slice(0,3).map((p,i)=>`<span class="w-6 h-6 rounded-[8px] border-2 border-white flex items-center justify-center text-[9px] font-bold" style="background:${['#fdeeee','#eef4fd','#eefaf3'][i]};color:${['#d94f4f','#2f6bc4','#177a54'][i]}">${p}</span>`).join('')}
+      </div>
+      <span class="text-[10.5px] text-[#a3a3ad] font-medium">참석 ${m.people.length>3?m.people[m.people.length-1]:m.people.length+'명'}</span>
+      ${m.stt?`<span class="flex items-center gap-1 text-[10px] font-semibold text-[#86868f] ml-auto"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>외부 서비스로 자동 정리됨</span>`:''}
+      ${m.decisions?`<span class="text-[10.5px] font-semibold text-[#177a54] ${m.stt?'':'ml-auto'}">결정 ${m.decisions.length}건</span>`:''}
+    </div>
+  </div>`;
+}
+document.getElementById('list').innerHTML=MEETS.map(card).join('');
+function filter(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  let n=0;
+  document.querySelectorAll('.meet').forEach(el=>{
+    const on=el.dataset.text.includes(q);
+    el.style.display=on?'':'none'; if(on)n++;
   });
-  document.getElementById('meetEmpty').style.display = shown===0 ? 'block' : 'none';
+  document.getElementById('empty').classList.toggle('hidden',n>0);
 }
 </script>
 </body>
