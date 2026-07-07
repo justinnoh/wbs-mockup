@@ -38,7 +38,6 @@
   <div class="px-6 flex items-center gap-1 border-b border-[#ececef]">
     <button id="tabbtn-groups" onclick="setTab('groups')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-[#f06a6a] text-[#d94f4f]">권한 그룹</button>
     <button id="tabbtn-overrides" onclick="setTab('overrides')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-transparent text-[#86868f] hover:text-[#3d3d45]">개인 예외 <span class="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fdeeee] text-[#d94f4f]">3</span></button>
-    <button id="tabbtn-roles" onclick="setTab('roles')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-transparent text-[#86868f] hover:text-[#3d3d45]">역할 기본 권한</button>
   </div>
 
   <!-- ═══ 탭 1: 권한 그룹 ═══ -->
@@ -101,27 +100,6 @@
     </div>
   </div>
 
-  <!-- ═══ 탭 3: 역할 기본 권한 ═══ -->
-  <div id="tab-roles" class="hidden px-6 py-5 flex-col gap-3">
-    <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide">역할별 기본 권한 — 모든 직원의 출발점. 모듈이 늘어나면 열이 추가됩니다</div>
-    <div class="bg-white border border-[#ececef] rounded-[13px] overflow-hidden">
-      <table class="w-full text-left">
-        <thead>
-          <tr class="border-b border-[#ececef] text-[10.5px] font-bold text-[#a3a3ad]">
-            <th class="px-5 py-3">역할</th>
-            <th class="px-4 py-3 text-center">WBS<br><span class="font-medium text-[#c9c9cf]">프로젝트·업무</span></th>
-            <th class="px-4 py-3 text-center">Agent 관리</th>
-            <th class="px-4 py-3 text-center">매출 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
-            <th class="px-4 py-3 text-center">고객 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
-            <th class="px-4 py-3 text-center">영업 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
-          </tr>
-        </thead>
-        <tbody id="role-rows" class="text-[12px] font-medium"></tbody>
-      </table>
-    </div>
-    <div class="text-[11px] text-[#9a9aa3] font-medium">● 전체 &nbsp;◐ 조회만 &nbsp;— 없음 · 역할 기본으로 부족한 접근은 <b>권한 그룹</b>이나 <b>개인 예외</b>로 부여하세요. 좌측 메뉴는 보유 권한의 모듈 기준으로 자동 노출됩니다.</div>
-  </div>
-
 </div>
 
 <script src="shared.js"></script>
@@ -142,13 +120,6 @@ const OVERRIDES = [
   { user:'오세영', role:'사원 · 영업팀', perm:'sales.edit — 매출 입력·수정', allow:true,  expire:'2026-09-30', by:'시스템 관리자 · 2026-07-01', note:'분기 결산 지원(한시)' },
   { user:'유진아', role:'사원 · 영업팀', perm:'crm.customer.edit — 고객 등록·수정', allow:true, expire:'무기한', by:'시스템 관리자 · 2026-06-12', note:'' },
   { user:'강태오', role:'외부 구성원', perm:'deal.view — 영업 현황 조회', allow:false, expire:'무기한', by:'시스템 관리자 · 2026-06-20', note:'계약 범위 외 차단' },
-];
-const ROLES = [
-  ['시스템 관리자','●','●','●','●','●'],
-  ['관리자','●','◐','●','●','●'],
-  ['지점 관리자','●','—','◐','◐','◐'],
-  ['사원','◐','—','—','—','—'],
-  ['외부 구성원','◐<br><span class="text-[9px] text-[#a3a3ad]">참여 프로젝트만</span>','—','—','—','—'],
 ];
 const AV = ['#fdeeee|#d94f4f','#eef4fd|#2f6bc4','#eefaf3|#177a54','#fdf6e3|#8a6914','#f3eefd|#7a4fd0'];
 const chip = (n,i) => { const [bg,fg]=AV[i%5].split('|'); return `<span class="flex items-center gap-1.5 rounded-lg border border-[#ececef] bg-white pl-1.5 pr-2.5 py-1.5"><span class="w-5 h-5 rounded-md text-[9px] font-bold flex items-center justify-center" style="background:${bg};color:${fg}">${n[0]}</span><span class="text-[11.5px] font-bold">${n}</span><button class="text-[#c9c9cf] hover:text-[#d94f4f] ml-0.5" onclick="alert('데모: ${n} 제외')">×</button></span>`; };
@@ -193,14 +164,8 @@ document.getElementById('ovr-rows').innerHTML = OVERRIDES.map((o,i)=>{ const [bg
     <td class="px-4 py-3.5 text-right pr-5"><button class="text-[10.5px] font-bold text-[#d94f4f] hover:underline" onclick="alert('데모: 예외 해제')">해제</button></td>
   </tr>`; }).join('');
 
-document.getElementById('role-rows').innerHTML = ROLES.map(r=>`
-  <tr class="border-b border-[#f4f2f0] last:border-0">
-    <td class="px-5 py-3.5 font-bold text-[12px]">${r[0]}</td>
-    ${r.slice(1).map(v=>`<td class="px-4 py-3.5 text-center ${v==='—'?'text-[#d5d5db]':'text-[#3d3d45] font-bold'}">${v}</td>`).join('')}
-  </tr>`).join('');
-
 function setTab(t){
-  ['groups','overrides','roles'].forEach(x=>{
+  ['groups','overrides'].forEach(x=>{
     document.getElementById('tab-'+x).classList.toggle('hidden', x!==t);
     document.getElementById('tab-'+x).classList.toggle('flex', x===t);
     const b=document.getElementById('tabbtn-'+x);
