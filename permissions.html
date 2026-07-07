@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>권한 관리 · WBS</title>
+<script src="head.js"></script>
+</head>
+<body data-page="permissions">
+<div id="content">
+
+  <!-- 페이지 헤더 -->
+  <div class="px-6 pt-5 pb-4 flex items-center justify-between">
+    <div class="flex items-baseline gap-2.5">
+      <h1 class="text-[16px] font-bold tracking-tight">권한 관리</h1>
+      <span class="text-[12px] text-[#a3a3ad] font-medium">역할 기본 + 권한 그룹 + 개인 예외 · 판정: 개인 차단 &gt; 개인 허용 &gt; 그룹 &gt; 역할</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- 권한 역조회 -->
+      <div class="relative">
+        <div class="flex items-center gap-2 bg-white border border-[#ececef] rounded-lg px-3 py-2 w-[260px]">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#86868f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input id="revq" oninput="revLookup()" placeholder="권한 역조회 — 예: 매출 조회" class="flex-1 text-[12px] font-medium focus:outline-none placeholder-[#b4b4bc]">
+        </div>
+        <div id="revpop" class="hidden absolute right-0 top-11 z-40 w-[300px] bg-white border border-[#ececef] rounded-xl shadow-xl p-3">
+          <div class="text-[10.5px] font-bold text-[#a3a3ad] mb-2">‘<span id="revkey"></span>’ 권한 보유자 <span id="revcnt" class="text-[#d94f4f]"></span></div>
+          <div id="revlist" class="flex flex-col gap-1.5"></div>
+        </div>
+      </div>
+      <button class="flex items-center gap-1.5 rounded-lg bg-[#18181b] text-white text-[11.5px] font-bold px-3.5 py-2 hover:bg-[#2d2d33]" onclick="alert('데모: 새 권한 그룹 다이얼로그')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        권한 그룹 만들기
+      </button>
+    </div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="px-6 flex items-center gap-1 border-b border-[#ececef]">
+    <button id="tabbtn-groups" onclick="setTab('groups')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-[#f06a6a] text-[#d94f4f]">권한 그룹</button>
+    <button id="tabbtn-overrides" onclick="setTab('overrides')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-transparent text-[#86868f] hover:text-[#3d3d45]">개인 예외 <span class="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fdeeee] text-[#d94f4f]">3</span></button>
+    <button id="tabbtn-roles" onclick="setTab('roles')" class="px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-transparent text-[#86868f] hover:text-[#3d3d45]">역할 기본 권한</button>
+  </div>
+
+  <!-- ═══ 탭 1: 권한 그룹 ═══ -->
+  <div id="tab-groups" class="px-6 py-5 flex gap-4 items-start">
+    <!-- 그룹 목록 -->
+    <div class="w-[300px] shrink-0 flex flex-col gap-2">
+      <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide px-1 pb-1">그룹 4개 · 일상 운영은 그룹으로</div>
+      <div id="grouplist" class="flex flex-col gap-2"></div>
+    </div>
+    <!-- 그룹 상세 -->
+    <div class="flex-1 min-w-0 bg-white border border-[#ececef] rounded-[13px]">
+      <div class="px-5 py-4 border-b border-[#ececef] flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="gd-name" class="text-[14px] font-bold tracking-tight">매출 조회팀</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#f4f2f0] text-[#86868f]" id="gd-count">구성원 4명</span>
+          </div>
+          <div id="gd-desc" class="text-[11.5px] text-[#9a9aa3] font-medium mt-0.5">월 매출 리포트 열람이 필요한 팀장급</div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-[#ececef] text-[#5b5b64] hover:bg-[#f4f2f0]" onclick="alert('데모: 그룹 수정')">수정</button>
+          <button class="text-[11px] font-bold px-3 py-1.5 rounded-lg border border-[#ececef] text-[#d94f4f] hover:bg-[#fdeeee]" onclick="alert('데모: 그룹 삭제(소프트)')">삭제</button>
+        </div>
+      </div>
+      <!-- 권한 구성 (모듈별) -->
+      <div class="px-5 py-4 border-b border-[#ececef]">
+        <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide mb-3">권한 구성 — 체크한 권한이 그룹 전원에게 부여됩니다</div>
+        <div id="gd-perms" class="flex flex-col gap-4"></div>
+      </div>
+      <!-- 구성원 -->
+      <div class="px-5 py-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide">구성원 — 발령·이동 시 여기서 넣고 빼면 됩니다</div>
+          <button class="text-[11px] font-bold text-[#d94f4f] hover:underline" onclick="alert('데모: 직원 검색 추가')">+ 직원 추가</button>
+        </div>
+        <div id="gd-members" class="flex flex-wrap gap-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 탭 2: 개인 예외 ═══ -->
+  <div id="tab-overrides" class="hidden px-6 py-5 flex-col gap-3">
+    <div class="flex items-center gap-2.5 rounded-xl border border-[#f3d9a4] bg-[#fdf6e3] px-4 py-3">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b98a1d" stroke-width="2" stroke-linecap="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="text-[11.5px] font-semibold text-[#8a6914]">운영 원칙: 권한은 그룹으로, 개인 예외는 소수만. 예외가 늘어나면 권한 그룹을 만들어 옮기세요.</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide">개인 예외 3건 — 차단이 허용보다 항상 우선합니다</div>
+      <button class="flex items-center gap-1.5 rounded-lg border border-[#ececef] bg-white text-[11.5px] font-bold px-3 py-1.5 text-[#5b5b64] hover:bg-[#f4f2f0]" onclick="alert('데모: 개인 예외 추가 다이얼로그')">+ 예외 추가</button>
+    </div>
+    <div class="bg-white border border-[#ececef] rounded-[13px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b border-[#ececef] text-[10.5px] font-bold text-[#a3a3ad]">
+            <th class="px-5 py-3">직원</th><th class="px-4 py-3">권한</th><th class="px-4 py-3">유형</th><th class="px-4 py-3">만료</th><th class="px-4 py-3">부여자 · 일시</th><th class="px-4 py-3 text-right pr-5">액션</th>
+          </tr>
+        </thead>
+        <tbody id="ovr-rows" class="text-[12px] font-medium"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ 탭 3: 역할 기본 권한 ═══ -->
+  <div id="tab-roles" class="hidden px-6 py-5 flex-col gap-3">
+    <div class="text-[10.5px] font-bold text-[#b4b4bc] tracking-wide">역할별 기본 권한 — 모든 직원의 출발점. 모듈이 늘어나면 열이 추가됩니다</div>
+    <div class="bg-white border border-[#ececef] rounded-[13px] overflow-hidden">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b border-[#ececef] text-[10.5px] font-bold text-[#a3a3ad]">
+            <th class="px-5 py-3">역할</th>
+            <th class="px-4 py-3 text-center">WBS<br><span class="font-medium text-[#c9c9cf]">프로젝트·업무</span></th>
+            <th class="px-4 py-3 text-center">Agent 관리</th>
+            <th class="px-4 py-3 text-center">매출 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
+            <th class="px-4 py-3 text-center">고객 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
+            <th class="px-4 py-3 text-center">영업 관리 <span class="text-[9px] px-1 py-0.5 rounded bg-[#eef4fd] text-[#2f6bc4] font-bold">확장</span></th>
+          </tr>
+        </thead>
+        <tbody id="role-rows" class="text-[12px] font-medium"></tbody>
+      </table>
+    </div>
+    <div class="text-[11px] text-[#9a9aa3] font-medium">● 전체 &nbsp;◐ 조회만 &nbsp;— 없음 · 역할 기본으로 부족한 접근은 <b>권한 그룹</b>이나 <b>개인 예외</b>로 부여하세요. 좌측 메뉴는 보유 권한의 모듈 기준으로 자동 노출됩니다.</div>
+  </div>
+
+</div>
+
+<script src="shared.js"></script>
+<script>
+const MODULES = [
+  { name:'WBS', color:'#f06a6a', perms:[['wbs.project.view','프로젝트 조회'],['wbs.project.edit','프로젝트 편집'],['wbs.report.view','진척 리포트']] },
+  { name:'매출 관리', color:'#4573d2', perms:[['sales.view','매출 조회'],['sales.edit','매출 입력·수정'],['sales.report','매출 리포트']] },
+  { name:'고객 관리', color:'#1fa971', perms:[['crm.customer.view','고객 조회'],['crm.customer.edit','고객 등록·수정']] },
+  { name:'영업 관리', color:'#e0a93a', perms:[['deal.view','영업 현황 조회'],['deal.edit','영업 기회 관리']] },
+];
+const GROUPS = [
+  { name:'매출 조회팀', desc:'월 매출 리포트 열람이 필요한 팀장급', members:['김지훈','이서연','박준호','최민지'], checked:['sales.view','sales.report'] },
+  { name:'고객관리 담당', desc:'CS·영업지원 담당자', members:['정다은','한상우'], checked:['crm.customer.view','crm.customer.edit'] },
+  { name:'영업팀 전체', desc:'영업 모듈 전체 사용', members:['박준호','오세영','유진아','강태오','임하늘'], checked:['deal.view','deal.edit','crm.customer.view'] },
+  { name:'경영지원(전사 리포트)', desc:'전사 리포트 열람', members:['최민지'], checked:['sales.view','sales.report','wbs.report.view'] },
+];
+const OVERRIDES = [
+  { user:'오세영', role:'사원 · 영업팀', perm:'sales.edit — 매출 입력·수정', allow:true,  expire:'2026-09-30', by:'시스템 관리자 · 2026-07-01', note:'분기 결산 지원(한시)' },
+  { user:'유진아', role:'사원 · 영업팀', perm:'crm.customer.edit — 고객 등록·수정', allow:true, expire:'무기한', by:'시스템 관리자 · 2026-06-12', note:'' },
+  { user:'강태오', role:'외부 구성원', perm:'deal.view — 영업 현황 조회', allow:false, expire:'무기한', by:'시스템 관리자 · 2026-06-20', note:'계약 범위 외 차단' },
+];
+const ROLES = [
+  ['시스템 관리자','●','●','●','●','●'],
+  ['관리자','●','◐','●','●','●'],
+  ['지점 관리자','●','—','◐','◐','◐'],
+  ['사원','◐','—','—','—','—'],
+  ['외부 구성원','◐<br><span class="text-[9px] text-[#a3a3ad]">참여 프로젝트만</span>','—','—','—','—'],
+];
+const AV = ['#fdeeee|#d94f4f','#eef4fd|#2f6bc4','#eefaf3|#177a54','#fdf6e3|#8a6914','#f3eefd|#7a4fd0'];
+const chip = (n,i) => { const [bg,fg]=AV[i%5].split('|'); return `<span class="flex items-center gap-1.5 rounded-lg border border-[#ececef] bg-white pl-1.5 pr-2.5 py-1.5"><span class="w-5 h-5 rounded-md text-[9px] font-bold flex items-center justify-center" style="background:${bg};color:${fg}">${n[0]}</span><span class="text-[11.5px] font-bold">${n}</span><button class="text-[#c9c9cf] hover:text-[#d94f4f] ml-0.5" onclick="alert('데모: ${n} 제외')">×</button></span>`; };
+
+let curGroup = 0;
+function renderGroups(){
+  document.getElementById('grouplist').innerHTML = GROUPS.map((g,i)=>`
+    <button onclick="selGroup(${i})" class="text-left bg-white border rounded-[13px] px-4 py-3.5 transition ${i===curGroup?'border-[#f06a6a] ring-1 ring-[#f06a6a]':'border-[#ececef] hover:border-[#dcdce2]'}">
+      <div class="flex items-center justify-between">
+        <span class="text-[13px] font-bold tracking-tight">${g.name}</span>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#f4f2f0] text-[#86868f]">${g.members.length}명</span>
+      </div>
+      <div class="text-[11px] text-[#9a9aa3] font-medium mt-1">${g.desc}</div>
+      <div class="flex flex-wrap gap-1 mt-2">${[...new Set(g.checked.map(k=>MODULES.find(m=>m.perms.some(p=>p[0]===k))))].map(m=>`<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded-md" style="background:${m.color}1f;color:${m.color}">${m.name}</span>`).join('')}</div>
+    </button>`).join('');
+  const g = GROUPS[curGroup];
+  document.getElementById('gd-name').textContent = g.name;
+  document.getElementById('gd-desc').textContent = g.desc;
+  document.getElementById('gd-count').textContent = `구성원 ${g.members.length}명`;
+  document.getElementById('gd-perms').innerHTML = MODULES.map(m=>`
+    <div>
+      <div class="flex items-center gap-1.5 mb-2"><span class="w-2 h-2 rounded-[3px]" style="background:${m.color}"></span><span class="text-[11.5px] font-bold">${m.name}</span></div>
+      <div class="flex flex-wrap gap-2">${m.perms.map(([k,label])=>`
+        <label class="flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition ${g.checked.includes(k)?'border-[#f06a6a] bg-[#fdeeee]':'border-[#ececef] bg-white hover:border-[#dcdce2]'}" onclick="togglePerm('${k}');event.preventDefault()">
+          <span class="w-4 h-4 rounded-[5px] flex items-center justify-center ${g.checked.includes(k)?'bg-[#f06a6a] text-white':'border-[1.5px] border-[#d5d5db]'}">${g.checked.includes(k)?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':''}</span>
+          <span class="text-[11.5px] font-semibold ${g.checked.includes(k)?'text-[#d94f4f]':'text-[#5b5b64]'}">${label}</span>
+          <span class="mono text-[9.5px] text-[#b4b4bc]">${k}</span>
+        </label>`).join('')}</div>
+    </div>`).join('');
+  document.getElementById('gd-members').innerHTML = g.members.map(chip).join('');
+}
+function selGroup(i){ curGroup=i; renderGroups(); }
+function togglePerm(k){ const c=GROUPS[curGroup].checked; c.includes(k)?c.splice(c.indexOf(k),1):c.push(k); renderGroups(); }
+
+document.getElementById('ovr-rows').innerHTML = OVERRIDES.map((o,i)=>{ const [bg,fg]=AV[i%5].split('|'); return `
+  <tr class="border-b border-[#f4f2f0] last:border-0">
+    <td class="px-5 py-3.5"><div class="flex items-center gap-2"><span class="w-6 h-6 rounded-[8px] text-[9.5px] font-bold flex items-center justify-center" style="background:${bg};color:${fg}">${o.user[0]}</span><div><div class="font-bold text-[12px]">${o.user}</div><div class="text-[10px] text-[#a3a3ad]">${o.role}</div></div></div></td>
+    <td class="px-4 py-3.5"><span class="mono text-[11px] text-[#3d3d45]">${o.perm}</span>${o.note?`<div class="text-[10px] text-[#a3a3ad] mt-0.5">${o.note}</div>`:''}</td>
+    <td class="px-4 py-3.5">${o.allow?'<span class="text-[10px] font-bold px-2 py-1 rounded-md bg-[#eefaf3] text-[#177a54]">허용</span>':'<span class="text-[10px] font-bold px-2 py-1 rounded-md bg-[#fdeeee] text-[#d94f4f]">차단 · 최우선</span>'}</td>
+    <td class="px-4 py-3.5 mono text-[11px] ${o.expire==='무기한'?'text-[#a3a3ad]':'text-[#b9821d] font-bold'}">${o.expire}</td>
+    <td class="px-4 py-3.5 text-[10.5px] text-[#86868f]">${o.by}</td>
+    <td class="px-4 py-3.5 text-right pr-5"><button class="text-[10.5px] font-bold text-[#d94f4f] hover:underline" onclick="alert('데모: 예외 해제')">해제</button></td>
+  </tr>`; }).join('');
+
+document.getElementById('role-rows').innerHTML = ROLES.map(r=>`
+  <tr class="border-b border-[#f4f2f0] last:border-0">
+    <td class="px-5 py-3.5 font-bold text-[12px]">${r[0]}</td>
+    ${r.slice(1).map(v=>`<td class="px-4 py-3.5 text-center ${v==='—'?'text-[#d5d5db]':'text-[#3d3d45] font-bold'}">${v}</td>`).join('')}
+  </tr>`).join('');
+
+function setTab(t){
+  ['groups','overrides','roles'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('hidden', x!==t);
+    document.getElementById('tab-'+x).classList.toggle('flex', x===t);
+    const b=document.getElementById('tabbtn-'+x);
+    b.className = x===t
+      ? 'px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-[#f06a6a] text-[#d94f4f]'
+      : 'px-3.5 py-2.5 text-[12.5px] font-bold tracking-tight border-b-2 border-transparent text-[#86868f] hover:text-[#3d3d45]';
+  });
+}
+
+// 권한 역조회 (역할+그룹+예외 병합 데모)
+function revLookup(){
+  const q=document.getElementById('revq').value.trim();
+  const pop=document.getElementById('revpop');
+  if(!q){ pop.classList.add('hidden'); return; }
+  const perm = MODULES.flatMap(m=>m.perms).find(p=>p[1].includes(q)||p[0].includes(q));
+  if(!perm){ pop.classList.add('hidden'); return; }
+  const holders=new Map();
+  GROUPS.forEach(g=>{ if(g.checked.includes(perm[0])) g.members.forEach(u=>holders.set(u,'그룹: '+g.name)); });
+  OVERRIDES.forEach(o=>{ if(o.perm.startsWith(perm[0])) o.allow?holders.set(o.user,'개인 허용'+(o.expire!=='무기한'?' ~'+o.expire:'')):holders.delete(o.user)&&holders.set(o.user+' ⛔','개인 차단'); });
+  document.getElementById('revkey').textContent=perm[1];
+  document.getElementById('revcnt').textContent=holders.size+'명';
+  document.getElementById('revlist').innerHTML=[...holders].map(([u,src],i)=>{ const [bg,fg]=AV[i%5].split('|'); return `<div class="flex items-center justify-between"><span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-md text-[9px] font-bold flex items-center justify-center" style="background:${bg};color:${fg}">${u[0]}</span><span class="text-[11.5px] font-bold">${u}</span></span><span class="text-[10px] text-[#a3a3ad] font-medium">${src}</span></div>`; }).join('')||'<div class="text-[11px] text-[#a3a3ad]">보유자 없음</div>';
+  pop.classList.remove('hidden');
+}
+
+renderGroups();
+</script>
+</body>
+</html>
